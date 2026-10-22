@@ -95,7 +95,8 @@
       "id": "renderer_finding",
       "statement": "Generated godoc overview link targets an absent index.html before the declared compatibility copy.",
       "reproduction": "node scripts/repro-godoc-navigation.mjs",
-      "workaround": "scripts/complete-build.mjs copies Sourcey-generated go-api.html to go-api/index.html unchanged."
+      "workaround": "scripts/complete-build.mjs copies Sourcey-generated go-api.html to go-api/index.html unchanged.",
+      "upstream_issue": "https://github.com/sourcey/sourcey/issues/298"
     },
     {
       "id": "published_bytes",
