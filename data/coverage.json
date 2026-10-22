@@ -1,0 +1,1304 @@
+{
+  "upstream_repo": "https://github.com/go-chi/chi",
+  "upstream_commit": "9f8adb1aabaa8a91180a821111d3f8e668d1c0bf",
+  "module": "github.com/go-chi/chi/v5",
+  "sourcey_version": "3.8.3",
+  "adapter": "godoc",
+  "packages": 2,
+  "documented_declarations": 129,
+  "functions": 57,
+  "types": 20,
+  "methods": 45,
+  "entries": [
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "function",
+      "symbol": "Chain",
+      "file": "chain.go",
+      "line": 6,
+      "anchor": "func-Chain",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chain.go#L6"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "function",
+      "symbol": "NewMux",
+      "file": "mux.go",
+      "line": 52,
+      "anchor": "func-NewMux",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L52"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "function",
+      "symbol": "NewRouteContext",
+      "file": "context.go",
+      "line": 31,
+      "anchor": "func-NewRouteContext",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L31"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "function",
+      "symbol": "NewRouter",
+      "file": "chi.go",
+      "line": 62,
+      "anchor": "func-NewRouter",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chi.go#L62"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "function",
+      "symbol": "RegisterMethod",
+      "file": "tree.go",
+      "line": 70,
+      "anchor": "func-RegisterMethod",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/tree.go#L70"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "function",
+      "symbol": "RouteContext",
+      "file": "context.go",
+      "line": 25,
+      "anchor": "func-RouteContext",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L25"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "function",
+      "symbol": "URLParam",
+      "file": "context.go",
+      "line": 11,
+      "anchor": "func-URLParam",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L11"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "function",
+      "symbol": "URLParamFromCtx",
+      "file": "context.go",
+      "line": 16,
+      "anchor": "func-URLParamFromCtx",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L16"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "function",
+      "symbol": "Walk",
+      "file": "tree.go",
+      "line": 882,
+      "anchor": "func-Walk",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/tree.go#L882"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "type",
+      "symbol": "ChainHandler",
+      "file": "chain.go",
+      "line": 24,
+      "anchor": "type-ChainHandler",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chain.go#L24"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "ChainHandler.ServeHTTP",
+      "file": "chain.go",
+      "line": 30,
+      "anchor": "method-ChainHandler-ServeHTTP",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chain.go#L30"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "type",
+      "symbol": "Context",
+      "file": "context.go",
+      "line": 45,
+      "anchor": "type-Context",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L45"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Context.Clone",
+      "file": "context.go",
+      "line": 104,
+      "anchor": "method-Context-Clone",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L104"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Context.Reset",
+      "file": "context.go",
+      "line": 82,
+      "anchor": "method-Context-Reset",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L82"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Context.RoutePattern",
+      "file": "context.go",
+      "line": 147,
+      "anchor": "method-Context-RoutePattern",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L147"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Context.URLParam",
+      "file": "context.go",
+      "line": 124,
+      "anchor": "method-Context-URLParam",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L124"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "type",
+      "symbol": "Middlewares",
+      "file": "chi.go",
+      "line": 140,
+      "anchor": "type-Middlewares",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chi.go#L140"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Middlewares.Handler",
+      "file": "chain.go",
+      "line": 12,
+      "anchor": "method-Middlewares-Handler",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chain.go#L12"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Middlewares.HandlerFunc",
+      "file": "chain.go",
+      "line": 18,
+      "anchor": "method-Middlewares-HandlerFunc",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chain.go#L18"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "type",
+      "symbol": "Mux",
+      "file": "mux.go",
+      "line": 21,
+      "anchor": "type-Mux",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L21"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Connect",
+      "file": "mux.go",
+      "line": 143,
+      "anchor": "method-Mux-Connect",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L143"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Delete",
+      "file": "mux.go",
+      "line": 149,
+      "anchor": "method-Mux-Delete",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L149"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Find",
+      "file": "mux.go",
+      "line": 382,
+      "anchor": "method-Mux-Find",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L382"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Get",
+      "file": "mux.go",
+      "line": 155,
+      "anchor": "method-Mux-Get",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L155"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Group",
+      "file": "mux.go",
+      "line": 268,
+      "anchor": "method-Mux-Group",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L268"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Handle",
+      "file": "mux.go",
+      "line": 109,
+      "anchor": "method-Mux-Handle",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L109"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.HandleFunc",
+      "file": "mux.go",
+      "line": 121,
+      "anchor": "method-Mux-HandleFunc",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L121"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Head",
+      "file": "mux.go",
+      "line": 161,
+      "anchor": "method-Mux-Head",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L161"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Match",
+      "file": "mux.go",
+      "line": 373,
+      "anchor": "method-Mux-Match",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L373"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Method",
+      "file": "mux.go",
+      "line": 127,
+      "anchor": "method-Mux-Method",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L127"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.MethodFunc",
+      "file": "mux.go",
+      "line": 137,
+      "anchor": "method-Mux-MethodFunc",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L137"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.MethodNotAllowed",
+      "file": "mux.go",
+      "line": 223,
+      "anchor": "method-Mux-MethodNotAllowed",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L223"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.MethodNotAllowedHandler",
+      "file": "mux.go",
+      "line": 421,
+      "anchor": "method-Mux-MethodNotAllowedHandler",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L421"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Middlewares",
+      "file": "mux.go",
+      "line": 363,
+      "anchor": "method-Mux-Middlewares",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L363"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Mount",
+      "file": "mux.go",
+      "line": 295,
+      "anchor": "method-Mux-Mount",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L295"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.NotFound",
+      "file": "mux.go",
+      "line": 203,
+      "anchor": "method-Mux-NotFound",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L203"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.NotFoundHandler",
+      "file": "mux.go",
+      "line": 412,
+      "anchor": "method-Mux-NotFoundHandler",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L412"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Options",
+      "file": "mux.go",
+      "line": 167,
+      "anchor": "method-Mux-Options",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L167"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Patch",
+      "file": "mux.go",
+      "line": 173,
+      "anchor": "method-Mux-Patch",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L173"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Post",
+      "file": "mux.go",
+      "line": 179,
+      "anchor": "method-Mux-Post",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L179"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Put",
+      "file": "mux.go",
+      "line": 185,
+      "anchor": "method-Mux-Put",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L185"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Query",
+      "file": "mux.go",
+      "line": 191,
+      "anchor": "method-Mux-Query",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L191"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Route",
+      "file": "mux.go",
+      "line": 278,
+      "anchor": "method-Mux-Route",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L278"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Routes",
+      "file": "mux.go",
+      "line": 358,
+      "anchor": "method-Mux-Routes",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L358"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.ServeHTTP",
+      "file": "mux.go",
+      "line": 63,
+      "anchor": "method-Mux-ServeHTTP",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L63"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Trace",
+      "file": "mux.go",
+      "line": 197,
+      "anchor": "method-Mux-Trace",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L197"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.Use",
+      "file": "mux.go",
+      "line": 100,
+      "anchor": "method-Mux-Use",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L100"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "Mux.With",
+      "file": "mux.go",
+      "line": 242,
+      "anchor": "method-Mux-With",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L242"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "type",
+      "symbol": "Route",
+      "file": "tree.go",
+      "line": 872,
+      "anchor": "type-Route",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/tree.go#L872"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "type",
+      "symbol": "RouteParams",
+      "file": "context.go",
+      "line": 171,
+      "anchor": "type-RouteParams",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L171"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "method",
+      "symbol": "RouteParams.Add",
+      "file": "context.go",
+      "line": 176,
+      "anchor": "method-RouteParams-Add",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L176"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "type",
+      "symbol": "Router",
+      "file": "chi.go",
+      "line": 68,
+      "anchor": "type-Router",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chi.go#L68"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "type",
+      "symbol": "Routes",
+      "file": "chi.go",
+      "line": 121,
+      "anchor": "type-Routes",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chi.go#L121"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "type",
+      "symbol": "WalkFunc",
+      "file": "tree.go",
+      "line": 879,
+      "anchor": "type-WalkFunc",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/tree.go#L879"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5",
+      "kind": "variable",
+      "symbol": "RouteCtxKey",
+      "file": "context.go",
+      "line": 37,
+      "anchor": "var-RouteCtxKey",
+      "package_relative": "root",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L37"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "AllowContentEncoding",
+      "file": "middleware/content_encoding.go",
+      "line": 10,
+      "anchor": "func-AllowContentEncoding",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/content_encoding.go#L10"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "AllowContentType",
+      "file": "middleware/content_type.go",
+      "line": 20,
+      "anchor": "func-AllowContentType",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/content_type.go#L20"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "BasicAuth",
+      "file": "middleware/basic_auth.go",
+      "line": 10,
+      "anchor": "func-BasicAuth",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/basic_auth.go#L10"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "CleanPath",
+      "file": "middleware/clean_path.go",
+      "line": 12,
+      "anchor": "func-CleanPath",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/clean_path.go#L12"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "ClientIPFromHeader",
+      "file": "middleware/client_ip.go",
+      "line": 60,
+      "anchor": "func-ClientIPFromHeader",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L60"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "ClientIPFromRemoteAddr",
+      "file": "middleware/client_ip.go",
+      "line": 220,
+      "anchor": "func-ClientIPFromRemoteAddr",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L220"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "ClientIPFromXFF",
+      "file": "middleware/client_ip.go",
+      "line": 121,
+      "anchor": "func-ClientIPFromXFF",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L121"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "ClientIPFromXFFTrustedProxies",
+      "file": "middleware/client_ip.go",
+      "line": 182,
+      "anchor": "func-ClientIPFromXFFTrustedProxies",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L182"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "Compress",
+      "file": "middleware/compress.go",
+      "line": 45,
+      "anchor": "func-Compress",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L45"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "ContentCharset",
+      "file": "middleware/content_charset.go",
+      "line": 14,
+      "anchor": "func-ContentCharset",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/content_charset.go#L14"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "Deprecation",
+      "file": "middleware/deprecation.go",
+      "line": 22,
+      "anchor": "func-Deprecation",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/deprecation.go#L22"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "GetClientIP",
+      "file": "middleware/client_ip.go",
+      "line": 232,
+      "anchor": "func-GetClientIP",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L232"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "GetClientIPAddr",
+      "file": "middleware/client_ip.go",
+      "line": 244,
+      "anchor": "func-GetClientIPAddr",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L244"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "GetHead",
+      "file": "middleware/get_head.go",
+      "line": 10,
+      "anchor": "func-GetHead",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/get_head.go#L10"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "GetLogEntry",
+      "file": "middleware/logger.go",
+      "line": 75,
+      "anchor": "func-GetLogEntry",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L75"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "GetReqID",
+      "file": "middleware/request_id.go",
+      "line": 83,
+      "anchor": "func-GetReqID",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_id.go#L83"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "Heartbeat",
+      "file": "middleware/heartbeat.go",
+      "line": 12,
+      "anchor": "func-Heartbeat",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/heartbeat.go#L12"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "Logger",
+      "file": "middleware/logger.go",
+      "line": 39,
+      "anchor": "func-Logger",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L39"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "Maybe",
+      "file": "middleware/maybe.go",
+      "line": 8,
+      "anchor": "func-Maybe",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/maybe.go#L8"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "New",
+      "file": "middleware/middleware.go",
+      "line": 6,
+      "anchor": "func-New",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/middleware.go#L6"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "NewCompressor",
+      "file": "middleware/compress.go",
+      "line": 72,
+      "anchor": "func-NewCompressor",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L72"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "NewPattern",
+      "file": "middleware/route_headers.go",
+      "line": 135,
+      "anchor": "func-NewPattern",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L135"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "NewWrapResponseWriter",
+      "file": "middleware/wrap_writer.go",
+      "line": 15,
+      "anchor": "func-NewWrapResponseWriter",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/wrap_writer.go#L15"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "NextRequestID",
+      "file": "middleware/request_id.go",
+      "line": 94,
+      "anchor": "func-NextRequestID",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_id.go#L94"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "NoCache",
+      "file": "middleware/nocache.go",
+      "line": 40,
+      "anchor": "func-NoCache",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/nocache.go#L40"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "PageRoute",
+      "file": "middleware/page_route.go",
+      "line": 10,
+      "anchor": "func-PageRoute",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/page_route.go#L10"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "PathRewrite",
+      "file": "middleware/path_rewrite.go",
+      "line": 9,
+      "anchor": "func-PathRewrite",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/path_rewrite.go#L9"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "PrintPrettyStack",
+      "file": "middleware/recoverer.go",
+      "line": 54,
+      "anchor": "func-PrintPrettyStack",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/recoverer.go#L54"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "Profiler",
+      "file": "middleware/profiler.go",
+      "line": 22,
+      "anchor": "func-Profiler",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/profiler.go#L22"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "RealIP",
+      "file": "middleware/realip.go",
+      "line": 28,
+      "anchor": "func-RealIP",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/realip.go#L28"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "Recoverer",
+      "file": "middleware/recoverer.go",
+      "line": 22,
+      "anchor": "func-Recoverer",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/recoverer.go#L22"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "RedirectSlashes",
+      "file": "middleware/strip.go",
+      "line": 41,
+      "anchor": "func-RedirectSlashes",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/strip.go#L41"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "RequestID",
+      "file": "middleware/request_id.go",
+      "line": 67,
+      "anchor": "func-RequestID",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_id.go#L67"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "RequestLogger",
+      "file": "middleware/logger.go",
+      "line": 44,
+      "anchor": "func-RequestLogger",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L44"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "RequestSize",
+      "file": "middleware/request_size.go",
+      "line": 9,
+      "anchor": "func-RequestSize",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_size.go#L9"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "RouteHeaders",
+      "file": "middleware/route_headers.go",
+      "line": 42,
+      "anchor": "func-RouteHeaders",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L42"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "SetHeader",
+      "file": "middleware/content_type.go",
+      "line": 9,
+      "anchor": "func-SetHeader",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/content_type.go#L9"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "StripPrefix",
+      "file": "middleware/strip.go",
+      "line": 73,
+      "anchor": "func-StripPrefix",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/strip.go#L73"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "StripSlashes",
+      "file": "middleware/strip.go",
+      "line": 14,
+      "anchor": "func-StripSlashes",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/strip.go#L14"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "Sunset",
+      "file": "middleware/sunset.go",
+      "line": 22,
+      "anchor": "func-Sunset",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/sunset.go#L22"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "SupressNotFound",
+      "file": "middleware/supress_notfound.go",
+      "line": 15,
+      "anchor": "func-SupressNotFound",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/supress_notfound.go#L15"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "Throttle",
+      "file": "middleware/throttle.go",
+      "line": 35,
+      "anchor": "func-Throttle",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/throttle.go#L35"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "ThrottleBacklog",
+      "file": "middleware/throttle.go",
+      "line": 42,
+      "anchor": "func-ThrottleBacklog",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/throttle.go#L42"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "ThrottleWithOpts",
+      "file": "middleware/throttle.go",
+      "line": 47,
+      "anchor": "func-ThrottleWithOpts",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/throttle.go#L47"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "Timeout",
+      "file": "middleware/timeout.go",
+      "line": 32,
+      "anchor": "func-Timeout",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/timeout.go#L32"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "URLFormat",
+      "file": "middleware/url_format.go",
+      "line": 46,
+      "anchor": "func-URLFormat",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/url_format.go#L46"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "WithLogEntry",
+      "file": "middleware/logger.go",
+      "line": 81,
+      "anchor": "func-WithLogEntry",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L81"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "function",
+      "symbol": "WithValue",
+      "file": "middleware/value.go",
+      "line": 9,
+      "anchor": "func-WithValue",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/value.go#L9"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "type",
+      "symbol": "Compressor",
+      "file": "middleware/compress.go",
+      "line": 51,
+      "anchor": "type-Compressor",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L51"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "method",
+      "symbol": "Compressor.Handler",
+      "file": "middleware/compress.go",
+      "line": 207,
+      "anchor": "method-Compressor-Handler",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L207"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "method",
+      "symbol": "Compressor.SetEncoder",
+      "file": "middleware/compress.go",
+      "line": 167,
+      "anchor": "method-Compressor-SetEncoder",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L167"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "type",
+      "symbol": "DefaultLogFormatter",
+      "file": "middleware/logger.go",
+      "line": 92,
+      "anchor": "type-DefaultLogFormatter",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L92"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "method",
+      "symbol": "DefaultLogFormatter.NewLogEntry",
+      "file": "middleware/logger.go",
+      "line": 98,
+      "anchor": "method-DefaultLogFormatter-NewLogEntry",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L98"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "type",
+      "symbol": "EncoderFunc",
+      "file": "middleware/compress.go",
+      "line": 273,
+      "anchor": "type-EncoderFunc",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L273"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "type",
+      "symbol": "HeaderRoute",
+      "file": "middleware/route_headers.go",
+      "line": 110,
+      "anchor": "type-HeaderRoute",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L110"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "method",
+      "symbol": "HeaderRoute.IsMatch",
+      "file": "middleware/route_headers.go",
+      "line": 116,
+      "anchor": "method-HeaderRoute-IsMatch",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L116"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "type",
+      "symbol": "HeaderRouter",
+      "file": "middleware/route_headers.go",
+      "line": 46,
+      "anchor": "type-HeaderRouter",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L46"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "method",
+      "symbol": "HeaderRouter.Handler",
+      "file": "middleware/route_headers.go",
+      "line": 77,
+      "anchor": "method-HeaderRouter-Handler",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L77"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "method",
+      "symbol": "HeaderRouter.Route",
+      "file": "middleware/route_headers.go",
+      "line": 48,
+      "anchor": "method-HeaderRouter-Route",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L48"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "method",
+      "symbol": "HeaderRouter.RouteAny",
+      "file": "middleware/route_headers.go",
+      "line": 58,
+      "anchor": "method-HeaderRouter-RouteAny",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L58"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "method",
+      "symbol": "HeaderRouter.RouteDefault",
+      "file": "middleware/route_headers.go",
+      "line": 72,
+      "anchor": "method-HeaderRouter-RouteDefault",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L72"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "type",
+      "symbol": "LogEntry",
+      "file": "middleware/logger.go",
+      "line": 69,
+      "anchor": "type-LogEntry",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L69"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "type",
+      "symbol": "LogFormatter",
+      "file": "middleware/logger.go",
+      "line": 63,
+      "anchor": "type-LogFormatter",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L63"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "type",
+      "symbol": "LoggerInterface",
+      "file": "middleware/logger.go",
+      "line": 87,
+      "anchor": "type-LoggerInterface",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L87"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "type",
+      "symbol": "Pattern",
+      "file": "middleware/route_headers.go",
+      "line": 129,
+      "anchor": "type-Pattern",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L129"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "method",
+      "symbol": "Pattern.Match",
+      "file": "middleware/route_headers.go",
+      "line": 141,
+      "anchor": "method-Pattern-Match",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L141"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "type",
+      "symbol": "ThrottleOpts",
+      "file": "middleware/throttle.go",
+      "line": 20,
+      "anchor": "type-ThrottleOpts",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/throttle.go#L20"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "type",
+      "symbol": "WrapResponseWriter",
+      "file": "middleware/wrap_writer.go",
+      "line": 48,
+      "anchor": "type-WrapResponseWriter",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/wrap_writer.go#L48"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "constant",
+      "symbol": "RequestIDKey",
+      "file": "middleware/request_id.go",
+      "line": 21,
+      "anchor": "const-RequestIDKey",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_id.go#L21"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "variable",
+      "symbol": "LogEntryCtxKey",
+      "file": "middleware/logger.go",
+      "line": 15,
+      "anchor": "var-LogEntryCtxKey",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L15"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "variable",
+      "symbol": "DefaultLogger",
+      "file": "middleware/logger.go",
+      "line": 20,
+      "anchor": "var-DefaultLogger",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L20"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "variable",
+      "symbol": "IsTTY",
+      "file": "middleware/terminal.go",
+      "line": 35,
+      "anchor": "var-IsTTY",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/terminal.go#L35"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "variable",
+      "symbol": "RequestIDHeader",
+      "file": "middleware/request_id.go",
+      "line": 25,
+      "anchor": "var-RequestIDHeader",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_id.go#L25"
+    },
+    {
+      "package": "github.com/go-chi/chi/v5/middleware",
+      "kind": "variable",
+      "symbol": "URLFormatCtxKey",
+      "file": "middleware/url_format.go",
+      "line": 14,
+      "anchor": "var-URLFormatCtxKey",
+      "package_relative": "middleware",
+      "source_url": "https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/url_format.go#L14"
+    }
+  ]
+}

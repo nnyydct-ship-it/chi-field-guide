@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@runxhq/cli": "0.10.2",
+    "sourcey": "3.8.3"
+  },
+  "name": "chi-field-guide",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Independent source-linked field guide to go-chi/chi, generated with Sourcey",
+  "scripts": {
+    "build": "node scripts/clean-site.mjs && sourcey build -o site && node scripts/complete-build.mjs",
+    "snapshot": "node scripts/snapshot.mjs",
+    "verify": "node scripts/verify-site.mjs"
+  }
+}
