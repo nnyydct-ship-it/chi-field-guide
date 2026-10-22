@@ -1,0 +1,131 @@
+{
+  "summary": "Sourcey-generated independent chi field guide: 129 source-mapped declarations from a pinned maintained MIT Go library, original tested recipes, complete local-link checks, public byte read-back and a native Runx-verified receipt tree.",
+  "public_url": "https://nnyydct-ship-it.github.io/chi-field-guide/",
+  "source_repository": "https://github.com/nnyydct-ship-it/chi-field-guide",
+  "upstream": {
+    "upstream_repo": "https://github.com/go-chi/chi",
+    "upstream_commit": "9f8adb1aabaa8a91180a821111d3f8e668d1c0bf",
+    "module": "github.com/go-chi/chi/v5",
+    "adapter": "godoc",
+    "sourcey_version": "3.8.3"
+  },
+  "page_list": [
+    "introduction.html",
+    "quickstart.html",
+    "routing.html",
+    "middleware.html",
+    "timeouts.html",
+    "source-map.html",
+    "coverage.html",
+    "reproduce.html",
+    "license.html",
+    "go-api.html",
+    "go-api/package-root.html",
+    "go-api/pkg-middleware.html"
+  ],
+  "coverage_notes": "129 standalone public declarations. Interface members and exported struct fields are not counted again. The raw snapshot has no extracted upstream examples; six original Go test functions provide separate exercised recipes.",
+  "receipt_ref": "runx:receipt:sha256:bc112d40ffb1ab2a97f899386c8c9de961f5370b7a199b36a8b11727068767c2",
+  "observations": [
+    {
+      "id": "source",
+      "statement": "Maintained third-party Go library pinned at a public commit; source MIT license preserved.",
+      "repository": "https://github.com/go-chi/chi",
+      "commit": "9f8adb1aabaa8a91180a821111d3f8e668d1c0bf",
+      "last_commit_utc": "2026-10-18T13:50:22Z",
+      "license_file": "LICENSE-CHI"
+    },
+    {
+      "id": "environment",
+      "statement": "Recorded local runtime versions.",
+      "node": "v24.21.0",
+      "npm": "11.19.0",
+      "go": "go1.27.3 darwin/arm64",
+      "sourcey": "3.8.3",
+      "runx_version_output": "runx-cli 0.10.2\n",
+      "runx_command_result": "evidence/runx-version-result.json"
+    },
+    {
+      "id": "adapter",
+      "statement": "Actual native Go-source introspection into a committed portable snapshot.",
+      "adapter": "godoc",
+      "executed_from": "original task workspace",
+      "command": "work/sourcey-tools/node_modules/.bin/sourcey godoc --module work/third-party/chi --packages ./... --out work/chi-field-guide/data/godoc.json",
+      "snapshot": "data/godoc.json",
+      "reproduction": "node scripts/fetch-upstream.mjs && npm run snapshot"
+    },
+    {
+      "id": "coverage",
+      "statement": "Every counted public declaration has an exact pinned source position.",
+      "packages": 2,
+      "public_declarations": 129,
+      "functions": 57,
+      "types": 20,
+      "methods": 45,
+      "constants_and_variables": 7,
+      "inventory": "data/coverage.json",
+      "source_map": "source-map.md"
+    },
+    {
+      "id": "site_validation",
+      "statement": "Runtime-supervised verifier executed successfully with JSON output.",
+      "command": "node scripts/verify-site.mjs",
+      "result": {
+        "failures": [],
+        "fragment_links_checked": 198,
+        "generated_html_pages": 14,
+        "local_links_checked": 485,
+        "passed": true,
+        "source_mapped_declarations": 129,
+        "upstream_commit": "9f8adb1aabaa8a91180a821111d3f8e668d1c0bf"
+      },
+      "signed_command_receipt": "runx:receipt:sha256:9439f7bda4cd45613245a9f1e3464cc20c8325dddb2a8fd8e515ed226231564e",
+      "result_file": "evidence/site-verifier-result.json"
+    },
+    {
+      "id": "recipes",
+      "statement": "Actual Go tests exercise request outcomes, HEAD over HTTP, middleware nesting, late Use and cooperative deadline behavior.",
+      "source": "examples/recipes_test.go",
+      "command": "go test -count=1 -v ./...",
+      "exit_code": 0,
+      "test_functions": 6,
+      "path_method_table_cases": 4,
+      "stdout": "evidence/go-tests.txt"
+    },
+    {
+      "id": "renderer_finding",
+      "statement": "Generated godoc overview link targets an absent index.html before the declared compatibility copy.",
+      "reproduction": "node scripts/repro-godoc-navigation.mjs",
+      "workaround": "scripts/complete-build.mjs copies Sourcey-generated go-api.html to go-api/index.html unchanged."
+    },
+    {
+      "id": "published_bytes",
+      "statement": "Four representative public pages returned HTTP200 and matched the exact reviewed local bytes.",
+      "readback": "evidence/public-readback.json"
+    },
+    {
+      "id": "browser_qa",
+      "statement": "Existing Chrome loaded homepage and middleware API page; layout and navigation were visually inspected.",
+      "pages": [
+        "introduction.html",
+        "go-api/pkg-middleware.html"
+      ],
+      "limitation": "Existing automatic browser translation was active; the public English source was verified separately. No mobile visual QA claimed."
+    },
+    {
+      "id": "receipt_integrity",
+      "statement": "Five native local Ed25519 receipts verify with the exported public key and --trust configured.",
+      "root_receipt": "runx:receipt:sha256:bc112d40ffb1ab2a97f899386c8c9de961f5370b7a199b36a8b11727068767c2",
+      "verification": "evidence/offline-verification.json",
+      "verification_key": "evidence/verification-key.json",
+      "reproduction": "node scripts/verify-receipts.mjs",
+      "notarized": false
+    },
+    {
+      "id": "hosting_scope",
+      "statement": "Permanent project GitHub Pages URL, public source and reproducible build; the operator parent domain already hosts another project. Poster confirmation is needed for its separate host-credibility rule.",
+      "public_url": "https://nnyydct-ship-it.github.io/chi-field-guide/",
+      "project_repository": "https://github.com/nnyydct-ship-it/chi-field-guide",
+      "upstream_endorsed": false
+    }
+  ]
+}

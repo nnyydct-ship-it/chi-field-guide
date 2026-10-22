@@ -1,0 +1,27 @@
+{
+  "command_digest": "sha256:851139a4abe7c0a426f21647fbce1297184010485e569b92c6236e86af612f31",
+  "cwd": ".",
+  "decision": "completed",
+  "duration_ms": 243,
+  "errors": [],
+  "exit_code": 0,
+  "json": {
+    "failures": [],
+    "fragment_links_checked": 198,
+    "generated_html_pages": 14,
+    "local_links_checked": 485,
+    "passed": true,
+    "source_mapped_declarations": 129,
+    "upstream_commit": "9f8adb1aabaa8a91180a821111d3f8e668d1c0bf"
+  },
+  "schema": "runx.command.execution.v1",
+  "stderr": "",
+  "stderr_bytes": 0,
+  "stderr_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_truncated": false,
+  "stdout": "",
+  "stdout_bytes": 234,
+  "stdout_digest": "sha256:6014dcdeb4b442ab3c28d70b1db11e792d526ff4b9328484612cdb7e79ea5f0c",
+  "stdout_truncated": false,
+  "timed_out": false
+}

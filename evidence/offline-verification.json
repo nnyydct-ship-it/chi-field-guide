@@ -1,0 +1,12 @@
+{
+  "trees": [
+    {
+      "root_receipt_id": "sha256:bc112d40ffb1ab2a97f899386c8c9de961f5370b7a199b36a8b11727068767c2",
+      "receipt_count": 5,
+      "valid": true,
+      "findings": []
+    }
+  ],
+  "unreadable_files": [],
+  "valid": true
+}

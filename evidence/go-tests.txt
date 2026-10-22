@@ -1,0 +1,23 @@
+=== RUN   TestPathAndMethod
+=== RUN   TestPathAndMethod/GET/items/42
+=== RUN   TestPathAndMethod/POST/items/42
+=== RUN   TestPathAndMethod/GET/missing
+=== RUN   TestPathAndMethod/GET/items/42/
+--- PASS: TestPathAndMethod (0.00s)
+    --- PASS: TestPathAndMethod/GET/items/42 (0.00s)
+    --- PASS: TestPathAndMethod/POST/items/42 (0.00s)
+    --- PASS: TestPathAndMethod/GET/missing (0.00s)
+    --- PASS: TestPathAndMethod/GET/items/42/ (0.00s)
+=== RUN   TestGetHeadUsesGETRouteAndPreservesHEAD
+--- PASS: TestGetHeadUsesGETRouteAndPreservesHEAD (0.00s)
+=== RUN   TestExplicitHEADTakesPriority
+--- PASS: TestExplicitHEADTakesPriority (0.00s)
+=== RUN   TestMiddlewareNesting
+    recipes_test.go:87: observed: [outer-in group-in inline-in handler inline-out group-out outer-out]
+--- PASS: TestMiddlewareNesting (0.00s)
+=== RUN   TestLateUsePanics
+--- PASS: TestLateUsePanics (0.00s)
+=== RUN   TestTimeoutCancelsCooperatingHandler
+--- PASS: TestTimeoutCancelsCooperatingHandler (0.00s)
+PASS
+ok  	example.com/chi-field-guide/examples	0.807s

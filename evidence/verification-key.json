@@ -1,0 +1,6 @@
+{
+  "issuer_type": "local",
+  "kid": "local-23f81d076d090feaf1f834b3faac0bcee21784f006ad47fcb361e0ed957f235b",
+  "public_key_base64": "Z5NeBRdQG3vZl6qELr4fjUTON2wh3OYvMaPiHr5aF0o=",
+  "verification_scope": "Integrity and attribution to this local runtime key; no external notary or maintainer endorsement."
+}

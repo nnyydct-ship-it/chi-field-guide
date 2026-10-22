@@ -1,0 +1,33 @@
+{
+  "observed_at_utc": "2026-10-22T10:57:18.535Z",
+  "checks": [
+    {
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/introduction.html",
+      "status": 200,
+      "bytes": 24243,
+      "sha256": "14b5eda1725fe04c139d145f610542b15f7cb01986f0bb376b4a357e94b7ec62",
+      "matches_local": true
+    },
+    {
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/source-map.html",
+      "status": 200,
+      "bytes": 53950,
+      "sha256": "6ab9a901a177f7092749e641d17db0d43365cab9ab943abca655098b7844af63",
+      "matches_local": true
+    },
+    {
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api/package-root.html",
+      "status": 200,
+      "bytes": 113742,
+      "sha256": "86d7342ec976137d9ea8fe4599434e9e8444f765063bf0989e54abe2c1307e26",
+      "matches_local": true
+    },
+    {
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api/pkg-middleware.html",
+      "status": 200,
+      "bytes": 181975,
+      "sha256": "86fd8b45289908c6c5f03ce81f50d5c3e3436e1a15351280e3da91acbb6efd09",
+      "matches_local": true
+    }
+  ]
+}

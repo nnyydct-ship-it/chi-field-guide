@@ -4,3 +4,5 @@ node_modules
 site/
 .DS_Store
 *.checkpoint-tmp
+
+.repro-native-output/

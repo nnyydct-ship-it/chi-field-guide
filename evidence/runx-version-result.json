@@ -1,0 +1,19 @@
+{
+  "command_digest": "sha256:e6a5471d0cfc790187351bc4eaae11f0c740c798278f123f8e672b06cd48d08c",
+  "cwd": ".",
+  "decision": "completed",
+  "duration_ms": 108,
+  "errors": [],
+  "exit_code": 0,
+  "json": null,
+  "schema": "runx.command.execution.v1",
+  "stderr": "",
+  "stderr_bytes": 0,
+  "stderr_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_truncated": false,
+  "stdout": "runx-cli 0.10.2\n",
+  "stdout_bytes": 16,
+  "stdout_digest": "sha256:5738054def3fd76b09ae55ebea3a44bda2ec88b1a6a0067873f8c0669762797c",
+  "stdout_truncated": false,
+  "timed_out": false
+}
