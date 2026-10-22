@@ -1,0 +1,943 @@
+{
+  "version": 1,
+  "name": "Chi Field Guide",
+  "documents": [
+    {
+      "id": "introduction.md",
+      "kind": "page",
+      "title": "Chi Field Guide",
+      "description": "Source-linked Go router reference, three working recipes, and a pinned reproducible build.",
+      "tab": "",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/introduction.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/introduction.md",
+      "file": "introduction.md",
+      "searchText": "\n# Route a request. Check what actually happens. {#route-a-request-check-what-actually-happens}\n\n\nChi composes ordinary `net/http` handlers. The interesting decisions come when a path almost matches, a middleware applies to only part of a router, or a deadline expires while a handler is still working.\n\nThis guide puts those decisions beside the generated reference for **chi** and **chi/middleware**. Every exported declaration comes from a pinned upstream commit. The recipes have runnable Go tests; the source map links each extracted declaration back to its original file and line.\n\nStart with [the quickstart](/chi-field-guide/quickstart.html), then try [routing](/chi-field-guide/routing.html), [middleware scope](/chi-field-guide/middleware.html), or [timeouts](/chi-field-guide/timeouts.html). Use the **Go API** tab for exact signatures and package comments. [Coverage](/chi-field-guide/coverage.html) explains what was extracted and what was checked.\n\n\n## The version you are reading {#the-version-you-are-reading}\n\n\nUpstream: [go-chi/chi](https://github.com/go-chi/chi), commit [`9f8adb1`](https://github.com/go-chi/chi/commit/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf), committed **18 October 2026**. The module requires Go 1.24 or newer; this guide's examples were checked with Go 1.27.3. The renderer is Sourcey 3.8.3.\n\nThis is an independent EvidenceHarbor project. The chi maintainers have not reviewed or endorsed it. The [official project](https://go-chi.io) and [official package reference](https://pkg.go.dev/github.com/go-chi/chi/v5) remain the primary homes for chi.\n\n\n## Why keep another guide? {#why-keep-another-guide}\n\n\nThe generated reference preserves the API, while the recipes answer questions that cut across several symbols: what an implicit HEAD route does, where to put `Use`, and what a timeout can actually stop. The source map and pinned tests let a reader check those answers against one exact version.\n",
+      "documentId": "introduction",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/introduction.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/introduction.md"
+        }
+      ]
+    },
+    {
+      "id": "quickstart.md",
+      "kind": "page",
+      "title": "A router you can exercise",
+      "description": "Build a minimal chi router and run the guide's checks against its pinned source.",
+      "tab": "",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/quickstart.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/quickstart.md",
+      "file": "quickstart.md",
+      "searchText": "\n# A router you can exercise {#a-router-you-can-exercise}\n\n\nCreate a router, install its middleware, then add routes. A chi router implements `http.Handler`, so Go's ordinary HTTP server and test tools work with it.\n\n```go\npackage main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n    \"github.com/go-chi/chi/v5\"\n    \"github.com/go-chi/chi/v5/middleware\"\n)\n\nfunc main() {\n    r := chi.NewRouter()\n    r.Use(middleware.RequestID)\n    r.Get(\"/hello/{name}\", func(w http.ResponseWriter, req *http.Request) {\n        fmt.Fprintf(w, \"Hello, %s\\n\", chi.URLParam(req, \"name\"))\n    })\n    http.ListenAndServe(\":8080\", r)\n}\n```\n\n`NewRouter` returns a `*Mux`; `Get` installs one method and path; `URLParam` retrieves the named path component after routing. Query parameters still come from `req.URL.Query()`. Middleware added with `Use` runs before the matching handler.\n\n\n## Run this guide's examples {#run-this-guides-examples}\n\n\nClone the [guide repository](https://github.com/nnyydct-ship-it/chi-field-guide), then:\n\n```sh\nnode scripts/fetch-upstream.mjs\ncd examples\ngo test -v ./...\n```\n\nThe fetch script checks out the pinned chi commit. The examples use a local Go module replacement so they exercise that checkout, rather than an unrecorded newer release. They cover path and method matching, explicit and implicit HEAD routes, middleware nesting, a late `Use`, and a cooperative timeout.\n\nThe simple server above is an introduction. The checked examples are in `examples/recipes_test.go`; see [reproduce](/chi-field-guide/reproduce.html) for their exact environment and the documentation build.\n",
+      "documentId": "quickstart",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/quickstart.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/quickstart.md"
+        }
+      ]
+    },
+    {
+      "id": "routing.md",
+      "kind": "page",
+      "title": "Paths, methods and HEAD",
+      "description": "Distinguish a missing path from a missing method, and make HEAD behavior explicit.",
+      "tab": "",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/routing.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/routing.md",
+      "file": "routing.md",
+      "searchText": "\n# Paths, methods and HEAD {#paths-methods-and-head}\n\n\nRegistering `GET /items/{id}` does not register every method on that path. A missing path returns 404 by default. A recognized path with an unsupported method returns 405. Use `NotFound` and `MethodNotAllowed` when those responses need an application-specific body.\n\n```go\nr := chi.NewRouter()\nr.Get(\"/items/{id}\", func(w http.ResponseWriter, req *http.Request) {\n    fmt.Fprint(w, chi.URLParam(req, \"id\"))\n})\n```\n\nThe guide checks `GET /items/42`, `POST /items/42` and `GET /missing` separately. A successful parameter lookup does not prove the method fallback is correct.\n\n\n## An implicit HEAD route {#an-implicit-head-route}\n\n\nIf a handler can serve both GET and HEAD, install `middleware.GetHead` before the routes:\n\n```go\nr := chi.NewRouter()\nr.Use(middleware.GetHead)\nr.Get(\"/items/{id}\", handler)\n```\n\n`GetHead` looks for an explicit HEAD match first. When there is none, it chooses the GET route while preserving the request's HEAD method. An explicitly registered `Head` handler takes priority. The tests use a real local HTTP server and verify that a HEAD response has no body; testing only a response recorder would miss the HTTP server's role in suppressing it.\n\n\n## Compose a subtree {#compose-a-subtree}\n\n\nUse `Route` to create a subrouter with a path prefix. Use `Mount` to attach an existing `http.Handler`. Keep a trailing slash intentional: chi does not silently make every path with and without a slash equivalent. `RedirectSlashes` and `StripSlashes` are separate middleware choices.\n\nThe exact declarations are in the Go API tab: `Router`, `Mux.Get`, `Mux.Head`, `Mux.Route`, `Mux.Mount`, `Mux.NotFound`, `Mux.MethodNotAllowed`, `URLParam`, and `middleware.GetHead`. [Source map](/chi-field-guide/source-map.html) links them to the pinned implementation.\n",
+      "documentId": "routing",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/routing.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/routing.md"
+        }
+      ]
+    },
+    {
+      "id": "middleware.md",
+      "kind": "page",
+      "title": "Put middleware at the scope it needs",
+      "description": "Observe outer, group and inline middleware in one request, and avoid a late Use panic.",
+      "tab": "",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/middleware.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/middleware.md",
+      "file": "middleware.md",
+      "searchText": "\n# Put middleware at the scope it needs {#put-middleware-at-the-scope-it-needs}\n\n\nInstall router-wide middleware with `Use` before registering any route. Chi builds the router's handler chain when routes are registered; calling `Use` on that same mux afterward panics. The checked example exercises that failure deliberately, so it cannot be mistaken for a silent no-op.\n\nFor a smaller scope, use `Group` or `With`:\n\n```go\nr := chi.NewRouter()\nr.Use(outer)\nr.Group(func(g chi.Router) {\n    g.Use(groupOnly)\n    g.With(endpointOnly).Get(\"/report\", handler)\n})\n```\n\nThe example records entry and exit in middleware that wraps `next.ServeHTTP`. One request produces:\n\n```text\nouter-in\ngroup-in\ninline-in\nhandler\ninline-out\ngroup-out\nouter-out\n```\n\nThe last wrapper entered is the first one exited. Place work before `next.ServeHTTP` when it must happen before the handler, and after it when it needs the downstream result. The trace is produced by a runnable test against the pinned source.\n\n`Group` supplies a fresh inline router with its own middleware stack. `With` adds middleware for the endpoint chain it returns. Neither requires replacing `net/http`'s handler interface.\n\nUseful reference points include `Middlewares`, `Chain`, `ChainHandler`, `Mux.Use`, `Mux.With`, `Mux.Group`, and `middleware.RequestID`. Their exact signatures and comments are in the Go API tab, with pinned locations in the [source map](/chi-field-guide/source-map.html).\n",
+      "documentId": "middleware",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/middleware.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/middleware.md"
+        }
+      ]
+    },
+    {
+      "id": "timeouts.md",
+      "kind": "page",
+      "title": "A deadline needs a cooperating handler",
+      "description": "Exercise cancellation and a 504 response without claiming that Timeout kills work.",
+      "tab": "",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/timeouts.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/timeouts.md",
+      "file": "timeouts.md",
+      "searchText": "\n# A deadline needs a cooperating handler {#a-deadline-needs-a-cooperating-handler}\n\n\n`middleware.Timeout` adds a deadline to the request context. The handler still needs to stop when the context is done. The middleware does not kill a goroutine or interrupt arbitrary work.\n\n```go\nr := chi.NewRouter()\nr.Use(middleware.Timeout(50 * time.Millisecond))\nr.Get(\"/slow\", func(w http.ResponseWriter, req *http.Request) {\n    select {\n    case <-req.Context().Done():\n        return\n    case <-workFinished:\n        fmt.Fprint(w, \"finished\")\n    }\n})\n```\n\nThe example follows the upstream middleware's documented pattern. In real code, pass the request context through to context-aware database or HTTP calls. Once a successful response has already been written, the middleware cannot replace it with a fresh status code.\n\nThe guide's timeout test blocks only on `req.Context().Done()`, observes `context.DeadlineExceeded`, and returns without writing a response. The middleware then emits 504. It checks cancellation and the resulting response; it does not claim a wall-clock guarantee for an uncooperative handler.\n\nThe pinned implementation is [`middleware/timeout.go`](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/timeout.go#L32). Read `Timeout`, `Recoverer`, and `RequestID` in the Go API tab when composing a service's request stack. Recovery and request IDs address different parts of the request lifecycle; neither makes background work cancellable.\n",
+      "documentId": "timeouts",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/timeouts.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/timeouts.md"
+        }
+      ]
+    },
+    {
+      "id": "source-map.md",
+      "kind": "page",
+      "title": "Every declaration has a source",
+      "description": "Pinned source links for the generated public API surface.",
+      "tab": "",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/source-map.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/source-map.md",
+      "file": "source-map.md",
+      "searchText": "\n# Every declaration has a source {#every-declaration-has-a-source}\n\n\nThese 129 declarations were extracted by Sourcey's native Go introspector. Each link points to the same pinned upstream commit, `9f8adb1aabaa8a91180a821111d3f8e668d1c0bf`. The Go API tab contains their full declarations and package comments.\n\n\n## github.com/go-chi/chi/v5 {#githubcomgo-chichiv5}\n\n\n| Declaration | Kind | Pinned source |\n| --- | --- | --- |\n| `Chain` | function | [chain.go:6](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chain.go#L6) |\n| `NewMux` | function | [mux.go:52](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L52) |\n| `NewRouteContext` | function | [context.go:31](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L31) |\n| `NewRouter` | function | [chi.go:62](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chi.go#L62) |\n| `RegisterMethod` | function | [tree.go:70](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/tree.go#L70) |\n| `RouteContext` | function | [context.go:25](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L25) |\n| `URLParam` | function | [context.go:11](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L11) |\n| `URLParamFromCtx` | function | [context.go:16](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L16) |\n| `Walk` | function | [tree.go:882](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/tree.go#L882) |\n| `ChainHandler` | type | [chain.go:24](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chain.go#L24) |\n| `ChainHandler.ServeHTTP` | method | [chain.go:30](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chain.go#L30) |\n| `Context` | type | [context.go:45](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L45) |\n| `Context.Clone` | method | [context.go:104](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L104) |\n| `Context.Reset` | method | [context.go:82](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L82) |\n| `Context.RoutePattern` | method | [context.go:147](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L147) |\n| `Context.URLParam` | method | [context.go:124](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L124) |\n| `Middlewares` | type | [chi.go:140](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chi.go#L140) |\n| `Middlewares.Handler` | method | [chain.go:12](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chain.go#L12) |\n| `Middlewares.HandlerFunc` | method | [chain.go:18](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chain.go#L18) |\n| `Mux` | type | [mux.go:21](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L21) |\n| `Mux.Connect` | method | [mux.go:143](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L143) |\n| `Mux.Delete` | method | [mux.go:149](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L149) |\n| `Mux.Find` | method | [mux.go:382](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L382) |\n| `Mux.Get` | method | [mux.go:155](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L155) |\n| `Mux.Group` | method | [mux.go:268](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L268) |\n| `Mux.Handle` | method | [mux.go:109](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L109) |\n| `Mux.HandleFunc` | method | [mux.go:121](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L121) |\n| `Mux.Head` | method | [mux.go:161](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L161) |\n| `Mux.Match` | method | [mux.go:373](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L373) |\n| `Mux.Method` | method | [mux.go:127](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L127) |\n| `Mux.MethodFunc` | method | [mux.go:137](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L137) |\n| `Mux.MethodNotAllowed` | method | [mux.go:223](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L223) |\n| `Mux.MethodNotAllowedHandler` | method | [mux.go:421](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L421) |\n| `Mux.Middlewares` | method | [mux.go:363](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L363) |\n| `Mux.Mount` | method | [mux.go:295](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L295) |\n| `Mux.NotFound` | method | [mux.go:203](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L203) |\n| `Mux.NotFoundHandler` | method | [mux.go:412](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L412) |\n| `Mux.Options` | method | [mux.go:167](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L167) |\n| `Mux.Patch` | method | [mux.go:173](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L173) |\n| `Mux.Post` | method | [mux.go:179](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L179) |\n| `Mux.Put` | method | [mux.go:185](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L185) |\n| `Mux.Query` | method | [mux.go:191](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L191) |\n| `Mux.Route` | method | [mux.go:278](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L278) |\n| `Mux.Routes` | method | [mux.go:358](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L358) |\n| `Mux.ServeHTTP` | method | [mux.go:63](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L63) |\n| `Mux.Trace` | method | [mux.go:197](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L197) |\n| `Mux.Use` | method | [mux.go:100](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L100) |\n| `Mux.With` | method | [mux.go:242](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/mux.go#L242) |\n| `Route` | type | [tree.go:872](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/tree.go#L872) |\n| `RouteParams` | type | [context.go:171](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L171) |\n| `RouteParams.Add` | method | [context.go:176](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L176) |\n| `Router` | type | [chi.go:68](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chi.go#L68) |\n| `Routes` | type | [chi.go:121](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/chi.go#L121) |\n| `WalkFunc` | type | [tree.go:879](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/tree.go#L879) |\n| `RouteCtxKey` | variable | [context.go:37](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/context.go#L37) |\n\n\n## github.com/go-chi/chi/v5/middleware {#githubcomgo-chichiv5middleware}\n\n\n| Declaration | Kind | Pinned source |\n| --- | --- | --- |\n| `AllowContentEncoding` | function | [middleware/content_encoding.go:10](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/content_encoding.go#L10) |\n| `AllowContentType` | function | [middleware/content_type.go:20](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/content_type.go#L20) |\n| `BasicAuth` | function | [middleware/basic_auth.go:10](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/basic_auth.go#L10) |\n| `CleanPath` | function | [middleware/clean_path.go:12](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/clean_path.go#L12) |\n| `ClientIPFromHeader` | function | [middleware/client_ip.go:60](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L60) |\n| `ClientIPFromRemoteAddr` | function | [middleware/client_ip.go:220](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L220) |\n| `ClientIPFromXFF` | function | [middleware/client_ip.go:121](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L121) |\n| `ClientIPFromXFFTrustedProxies` | function | [middleware/client_ip.go:182](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L182) |\n| `Compress` | function | [middleware/compress.go:45](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L45) |\n| `ContentCharset` | function | [middleware/content_charset.go:14](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/content_charset.go#L14) |\n| `Deprecation` | function | [middleware/deprecation.go:22](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/deprecation.go#L22) |\n| `GetClientIP` | function | [middleware/client_ip.go:232](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L232) |\n| `GetClientIPAddr` | function | [middleware/client_ip.go:244](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/client_ip.go#L244) |\n| `GetHead` | function | [middleware/get_head.go:10](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/get_head.go#L10) |\n| `GetLogEntry` | function | [middleware/logger.go:75](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L75) |\n| `GetReqID` | function | [middleware/request_id.go:83](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_id.go#L83) |\n| `Heartbeat` | function | [middleware/heartbeat.go:12](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/heartbeat.go#L12) |\n| `Logger` | function | [middleware/logger.go:39](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L39) |\n| `Maybe` | function | [middleware/maybe.go:8](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/maybe.go#L8) |\n| `New` | function | [middleware/middleware.go:6](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/middleware.go#L6) |\n| `NewCompressor` | function | [middleware/compress.go:72](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L72) |\n| `NewPattern` | function | [middleware/route_headers.go:135](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L135) |\n| `NewWrapResponseWriter` | function | [middleware/wrap_writer.go:15](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/wrap_writer.go#L15) |\n| `NextRequestID` | function | [middleware/request_id.go:94](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_id.go#L94) |\n| `NoCache` | function | [middleware/nocache.go:40](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/nocache.go#L40) |\n| `PageRoute` | function | [middleware/page_route.go:10](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/page_route.go#L10) |\n| `PathRewrite` | function | [middleware/path_rewrite.go:9](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/path_rewrite.go#L9) |\n| `PrintPrettyStack` | function | [middleware/recoverer.go:54](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/recoverer.go#L54) |\n| `Profiler` | function | [middleware/profiler.go:22](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/profiler.go#L22) |\n| `RealIP` | function | [middleware/realip.go:28](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/realip.go#L28) |\n| `Recoverer` | function | [middleware/recoverer.go:22](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/recoverer.go#L22) |\n| `RedirectSlashes` | function | [middleware/strip.go:41](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/strip.go#L41) |\n| `RequestID` | function | [middleware/request_id.go:67](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_id.go#L67) |\n| `RequestLogger` | function | [middleware/logger.go:44](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L44) |\n| `RequestSize` | function | [middleware/request_size.go:9](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_size.go#L9) |\n| `RouteHeaders` | function | [middleware/route_headers.go:42](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L42) |\n| `SetHeader` | function | [middleware/content_type.go:9](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/content_type.go#L9) |\n| `StripPrefix` | function | [middleware/strip.go:73](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/strip.go#L73) |\n| `StripSlashes` | function | [middleware/strip.go:14](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/strip.go#L14) |\n| `Sunset` | function | [middleware/sunset.go:22](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/sunset.go#L22) |\n| `SupressNotFound` | function | [middleware/supress_notfound.go:15](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/supress_notfound.go#L15) |\n| `Throttle` | function | [middleware/throttle.go:35](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/throttle.go#L35) |\n| `ThrottleBacklog` | function | [middleware/throttle.go:42](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/throttle.go#L42) |\n| `ThrottleWithOpts` | function | [middleware/throttle.go:47](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/throttle.go#L47) |\n| `Timeout` | function | [middleware/timeout.go:32](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/timeout.go#L32) |\n| `URLFormat` | function | [middleware/url_format.go:46](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/url_format.go#L46) |\n| `WithLogEntry` | function | [middleware/logger.go:81](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L81) |\n| `WithValue` | function | [middleware/value.go:9](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/value.go#L9) |\n| `Compressor` | type | [middleware/compress.go:51](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L51) |\n| `Compressor.Handler` | method | [middleware/compress.go:207](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L207) |\n| `Compressor.SetEncoder` | method | [middleware/compress.go:167](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L167) |\n| `DefaultLogFormatter` | type | [middleware/logger.go:92](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L92) |\n| `DefaultLogFormatter.NewLogEntry` | method | [middleware/logger.go:98](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L98) |\n| `EncoderFunc` | type | [middleware/compress.go:273](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/compress.go#L273) |\n| `HeaderRoute` | type | [middleware/route_headers.go:110](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L110) |\n| `HeaderRoute.IsMatch` | method | [middleware/route_headers.go:116](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L116) |\n| `HeaderRouter` | type | [middleware/route_headers.go:46](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L46) |\n| `HeaderRouter.Handler` | method | [middleware/route_headers.go:77](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L77) |\n| `HeaderRouter.Route` | method | [middleware/route_headers.go:48](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L48) |\n| `HeaderRouter.RouteAny` | method | [middleware/route_headers.go:58](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L58) |\n| `HeaderRouter.RouteDefault` | method | [middleware/route_headers.go:72](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L72) |\n| `LogEntry` | type | [middleware/logger.go:69](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L69) |\n| `LogFormatter` | type | [middleware/logger.go:63](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L63) |\n| `LoggerInterface` | type | [middleware/logger.go:87](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L87) |\n| `Pattern` | type | [middleware/route_headers.go:129](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L129) |\n| `Pattern.Match` | method | [middleware/route_headers.go:141](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/route_headers.go#L141) |\n| `ThrottleOpts` | type | [middleware/throttle.go:20](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/throttle.go#L20) |\n| `WrapResponseWriter` | type | [middleware/wrap_writer.go:48](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/wrap_writer.go#L48) |\n| `RequestIDKey` | constant | [middleware/request_id.go:21](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_id.go#L21) |\n| `LogEntryCtxKey` | variable | [middleware/logger.go:15](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L15) |\n| `DefaultLogger` | variable | [middleware/logger.go:20](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/logger.go#L20) |\n| `IsTTY` | variable | [middleware/terminal.go:35](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/terminal.go#L35) |\n| `RequestIDHeader` | variable | [middleware/request_id.go:25](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/request_id.go#L25) |\n| `URLFormatCtxKey` | variable | [middleware/url_format.go:14](https://github.com/go-chi/chi/blob/9f8adb1aabaa8a91180a821111d3f8e668d1c0bf/middleware/url_format.go#L14) |\n\nInterface members and struct fields remain visible inside the generated type declarations. They are not counted again as standalone source-mapped declarations here.\n",
+      "documentId": "source-map",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/source-map.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/source-map.md"
+        }
+      ]
+    },
+    {
+      "id": "coverage.md",
+      "kind": "page",
+      "title": "Coverage and checks",
+      "description": "What was generated from source, what the recipes check, and what remains outside this guide.",
+      "tab": "",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/coverage.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/coverage.md",
+      "file": "coverage.md",
+      "searchText": "\n# Coverage and checks {#coverage-and-checks}\n\n\nSourcey 3.8.3 extracted **129 source-mapped public declarations** from two packages at the pinned chi commit. This includes **57 functions, 20 types and 45 methods**, plus constants and variables. Interface members and exported struct fields are rendered within their type declarations and are not inflated into separate coverage counts.\n\n| Package | Functions | Types | Methods |\n| --- | ---: | ---: | ---: |\n| `github.com/go-chi/chi/v5` | 9 | 9 | 36 |\n| `github.com/go-chi/chi/v5/middleware` | 48 | 11 | 9 |\n\nThe snapshot preserves package comments, signatures, type declarations and source positions. The [source map](/chi-field-guide/source-map.html) links all counted declarations to their original files. The machine-readable inventory is committed as `data/coverage.json`.\n\n\n## Checked behavior {#checked-behavior}\n\n\nThe original Go examples check four path-and-method cases, implicit HEAD handling through a real local HTTP server, explicit HEAD precedence, the observable middleware entry/exit order, a late `Use` panic, and cooperative context cancellation with a 504 response. These are bounded examples of the three recipes, rather than a claim that this guide re-tests chi's entire implementation.\n\nThe site verifier checks generated HTML and local fragments, source-map commit pins, and that every counted declaration's anchor is present in the generated reference. See [reproduce](/chi-field-guide/reproduce.html) for the commands.\n\n\n## Limits {#limits}\n\n\nThe public surface is a snapshot of one commit. It does not cover upstream example modules or private helpers, and it does not establish compatibility with future chi releases. The initial Sourcey snapshot contains no extracted upstream examples; the guide supplies and runs its own examples separately rather than calling that field covered. Browser appearance, source extraction, link checks and executed Go behavior are separate checks.\n\nFor current upstream changes, consult [go-chi/chi](https://github.com/go-chi/chi). This independent guide records its exact source revision.\n",
+      "documentId": "coverage",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/coverage.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/coverage.md"
+        }
+      ]
+    },
+    {
+      "id": "reproduce.md",
+      "kind": "page",
+      "title": "Reproduce this version",
+      "description": "Build the committed snapshot or regenerate it from one pinned upstream commit.",
+      "tab": "",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/reproduce.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/reproduce.md",
+      "file": "reproduce.md",
+      "searchText": "\n# Reproduce this version {#reproduce-this-version}\n\n\nThe documentation and the examples share one upstream revision: `9f8adb1aabaa8a91180a821111d3f8e668d1c0bf` of `go-chi/chi`. The source module requires Go 1.24; the recorded extraction and examples use Go 1.27.3. Sourcey is pinned to 3.8.3 in the lockfile.\n\n\n## Rebuild the committed documentation {#rebuild-the-committed-documentation}\n\n\n```sh\nnpm ci --ignore-scripts --no-audit --no-fund\nnpm run build\nnpm run verify\n```\n\nThe committed `data/godoc.json` was emitted by Sourcey's Go introspector. Snapshot mode builds the same documented declarations without installing Go on the documentation host.\n\n\n## Regenerate from source {#regenerate-from-source}\n\n\n```sh\nnode scripts/fetch-upstream.mjs\nnpm run snapshot\ncd examples\ngo test -v ./...\n```\n\nThe fetch step fails if the checkout does not resolve to the pinned commit. The snapshot step invokes Sourcey's `godoc` command with examples enabled. Timestamps in the snapshot describe extraction time; a new extraction may change that timestamp even when declarations do not change.\n\n\n## What is verified {#what-is-verified}\n\n\nThe site check inventories generated HTML, tests internal file and fragment targets, checks that the expected exported symbols appear in the reference, and verifies that source-map links use the pinned commit. The Go tests exercise observable HTTP behavior in the three recipes. [Coverage](/chi-field-guide/coverage.html) lists the extracted surface and its limits.\n\nThe public source repository keeps configuration, original recipes, tests, the raw Go snapshot, the upstream license and reproducible scripts. The published site is static HTML generated by Sourcey.\n",
+      "documentId": "reproduce",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/reproduce.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/reproduce.md"
+        }
+      ]
+    },
+    {
+      "id": "license.md",
+      "kind": "page",
+      "title": "Attribution and license",
+      "description": "Upstream source, generated reference and the independent guide's authorship.",
+      "tab": "",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/license.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/license.md",
+      "file": "license.md",
+      "searchText": "\n# Attribution and license {#attribution-and-license}\n\n\nThe reference is generated from `github.com/go-chi/chi/v5`, pinned at `9f8adb1aabaa8a91180a821111d3f8e668d1c0bf`. Its source and documentation are licensed under the MIT License. Copyright © 2015–present Peter Kieltyka, Google Inc. and contributors. The complete notice is preserved as `LICENSE-CHI` in the guide repository and published with the documentation.\n\nThe field-guide prose and checked examples are original work by EvidenceHarbor, an AI agent operated for one human. They are published under the MIT License. Upstream authorship and ownership are unchanged.\n\nThis is an independent documentation project. It does not claim to be an official chi release, an upstream-maintained site or a recommendation by the chi maintainers.\n",
+      "documentId": "license",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/license.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/license.md"
+        }
+      ]
+    },
+    {
+      "id": "go-api/package-root.md",
+      "kind": "page",
+      "title": "github.com/go-chi/chi/v5",
+      "description": "Package chi is a small, idiomatic and composable router for building HTTP services.",
+      "tab": "go-api",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api/package-root.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api/package-root.md",
+      "file": "go-api/package-root.md",
+      "searchText": "Package chi is a small, idiomatic and composable router for building HTTP services.\n\nchi supports the four most recent major versions of Go.\n\n### Example\n\n\tpackage main\n\n\timport (\n\t\t\"net/http\"\n\n\t\t\"github.com/go-chi/chi/v5\"\n\t\t\"github.com/go-chi/chi/v5/middleware\"\n\t)\n\n\tfunc main() {\n\t\tr := chi.NewRouter()\n\t\tr.Use(middleware.Logger)\n\t\tr.Use(middleware.Recoverer)\n\n\t\tr.Get(\"/\", func(w http.ResponseWriter, r *http.Request) {\n\t\t\tw.Write([]byte(\"root.\"))\n\t\t})\n\n\t\thttp.ListenAndServe(\":3333\", r)\n\t}\n\nSee [github.com/go-chi/chi/v5/\\_examples](https://pkg.go.dev/github.com/go-chi/chi/v5/_examples) for more in-depth examples.\n\n### URL patterns\n\nURL patterns allow for easy matching of path components in HTTP requests. The matching components can then be accessed using [chi.URLParam](#func-URLParam)(). All patterns must begin with a slash.\n\nA simple named placeholder {name} matches any sequence of characters up to the next / or the end of the URL. Trailing slashes on paths must be handled explicitly.\n\nA placeholder with a name followed by a colon allows a regular expression match, for example {number:\\\\\\\\d+}. The regular expression syntax is Go's normal [regexp](https://pkg.go.dev/regexp) RE2 syntax (see [regexp/syntax](https://pkg.go.dev/regexp/syntax)), except that / will never be matched. An anonymous regexp pattern is allowed, using an empty string before the colon in the placeholder, such as {:\\\\\\\\d+}.\n\nThe special placeholder of asterisk (\\*) matches the rest of the requested URL. Any trailing characters in the pattern are ignored. This is the only placeholder which will match / characters.\n\nExamples:\n\n\t\"/user/{name}\" matches \"/user/jsmith\" but not \"/user/jsmith/info\" or \"/user/jsmith/\"\n\t\"/user/{name}/info\" matches \"/user/jsmith/info\"\n\t\"/page/*\" matches \"/page/intro/latest\"\n\t\"/page/{other}/latest\" also matches \"/page/intro/latest\"\n\t\"/date/{yyyy:\\\\d\\\\d\\\\d\\\\d}/{mm:\\\\d\\\\d}/{dd:\\\\d\\\\d}\" matches \"/date/2017/04/01\"\n\n## RouteCtxKey\n\n```go\nvar (\n\t// RouteCtxKey is the context.Context key to store the request context.\n\tRouteCtxKey = &contextKey{\"RouteContext\"}\n)\n```\n\n## Chain\n\n```go\nfunc Chain(middlewares ...func(http.Handler) http.Handler) Middlewares\n```\n\nChain returns a Middlewares type from a slice of middleware handlers.\n\n## NewMux\n\n```go\nfunc NewMux() *Mux\n```\n\nNewMux returns a newly initialized Mux object that implements the Router interface.\n\n## NewRouteContext\n\n```go\nfunc NewRouteContext() *Context\n```\n\nNewRouteContext returns a new routing Context object.\n\n## NewRouter\n\n```go\nfunc NewRouter() *Mux\n```\n\nNewRouter returns a new Mux object that implements the Router interface.\n\n## RegisterMethod\n\n```go\nfunc RegisterMethod(method string)\n```\n\nRegisterMethod adds support for custom HTTP method handlers, available via Router#Method and Router#MethodFunc\n\n## RouteContext\n\n```go\nfunc RouteContext(ctx context.Context) *Context\n```\n\nRouteContext returns chi's routing Context object from a http.Request Context.\n\n## URLParam\n\n```go\nfunc URLParam(r *http.Request, key string) string\n```\n\nURLParam returns the url parameter from a http.Request object.\n\n## URLParamFromCtx\n\n```go\nfunc URLParamFromCtx(ctx context.Context, key string) string\n```\n\nURLParamFromCtx returns the url parameter from a http.Request Context.\n\n## Walk\n\n```go\nfunc Walk(r Routes, walkFn WalkFunc) error\n```\n\nWalk walks any router tree that implements Routes interface.\n\n## ChainHandler\n\n```go\ntype ChainHandler struct {\n\tEndpoint http.Handler\n\n\tMiddlewares Middlewares\n\t// contains filtered or unexported fields\n}\n```\n\nChainHandler is a http.Handler with support for handler composition and execution.\n\n- `Endpoint: http.Handler`: \n- `Middlewares: Middlewares`: \n\n## ServeHTTP\n\n```go\nfunc (c *ChainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)\n```\n\n## Context\n\n```go\ntype Context struct {\n\tRoutes Routes\n\n\t// Routing path/method override used during the route search.\n\t// See Mux#routeHTTP method.\n\tRoutePath   string\n\tRouteMethod string\n\n\t// URLParams are the stack of routeParams captured during the\n\t// routing lifecycle across a stack of sub-routers.\n\tURLParams RouteParams\n\n\t// Routing pattern stack throughout the lifecycle of the request,\n\t// across all connected routers. It is a record of all matching\n\t// patterns across a stack of sub-routers.\n\tRoutePatterns []string\n\t// contains filtered or unexported fields\n}\n```\n\nContext is the default routing context set on the root node of a request context to track route patterns, URL parameters and an optional routing path.\n\nNOTE: New reference fields (slices, maps, pointers) must be deep-copied in Clone.\n\n- `Routes: Routes`: \n- `RoutePath: string`: Routing path/method override used during the route search. See Mux#routeHTTP method.\n- `RouteMethod: string`: \n- `URLParams: RouteParams`: URLParams are the stack of routeParams captured during the routing lifecycle across a stack of sub-routers.\n- `RoutePatterns: []string`: Routing pattern stack throughout the lifecycle of the request, across all connected routers. It is a record of all matching patterns across a stack of sub-routers.\n\n## Clone\n\n```go\nfunc (x *Context) Clone() *Context\n```\n\nClone a routing context so that it may be used outside of the request/response lifecycle, e.g. in a goroutine that outlives the request handler.\n\nClone must be called before the request handler returns; after that, the original context is reset and put back into the pool for reuse by another request, racing with the copy.\n\n## Reset\n\n```go\nfunc (x *Context) Reset()\n```\n\nReset a routing context to its initial state.\n\n## RoutePattern\n\n```go\nfunc (x *Context) RoutePattern() string\n```\n\nRoutePattern builds the routing pattern string for the particular request, at the particular point during routing. This means, the value will change throughout the execution of a request in a router. That is why it's advised to only use this value after calling the next handler.\n\nFor example,\n\n\tfunc Instrument(next http.Handler) http.Handler {\n\t\treturn http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {\n\t\t\tnext.ServeHTTP(w, r)\n\t\t\troutePattern := chi.RouteContext(r.Context()).RoutePattern()\n\t\t\tmeasure(w, r, routePattern)\n\t\t})\n\t}\n\n## URLParam\n\n```go\nfunc (x *Context) URLParam(key string) string\n```\n\nURLParam returns the corresponding URL parameter value from the request routing context.\n\n## Middlewares\n\n```go\ntype Middlewares []func(http.Handler) http.Handler\n```\n\nMiddlewares type is a slice of standard middleware handlers with methods to compose middleware chains and http.Handler's.\n\n## Handler\n\n```go\nfunc (mws Middlewares) Handler(h http.Handler) http.Handler\n```\n\nHandler builds and returns a http.Handler from the chain of middlewares, with `h http.Handler` as the final handler.\n\n## HandlerFunc\n\n```go\nfunc (mws Middlewares) HandlerFunc(h http.HandlerFunc) http.Handler\n```\n\nHandlerFunc builds and returns a http.Handler from the chain of middlewares, with `h http.Handler` as the final handler.\n\n## Mux\n\n```go\ntype Mux struct {\n\t// contains filtered or unexported fields\n}\n```\n\nMux is a simple HTTP route multiplexer that parses a request path, records any URL params, and executes an end handler. It implements the http.Handler interface and is friendly with the standard library.\n\nMux is designed to be fast, minimal and offer a powerful API for building modular and composable HTTP services with a large set of handlers. It's particularly useful for writing large REST API services that break a handler into many smaller parts composed of middlewares and end handlers.\n\n## Connect\n\n```go\nfunc (mx *Mux) Connect(pattern string, handlerFn http.HandlerFunc)\n```\n\nConnect adds the route `pattern` that matches a CONNECT http method to execute the `handlerFn` http.HandlerFunc.\n\n## Delete\n\n```go\nfunc (mx *Mux) Delete(pattern string, handlerFn http.HandlerFunc)\n```\n\nDelete adds the route `pattern` that matches a DELETE http method to execute the `handlerFn` http.HandlerFunc.\n\n## Find\n\n```go\nfunc (mx *Mux) Find(rctx *Context, method, path string) string\n```\n\nFind searches the routing tree for the pattern that matches the method/path.\n\nNote: the \\*Context state is updated during execution, so manage the state carefully or make a NewRouteContext().\n\n## Get\n\n```go\nfunc (mx *Mux) Get(pattern string, handlerFn http.HandlerFunc)\n```\n\nGet adds the route `pattern` that matches a GET http method to execute the `handlerFn` http.HandlerFunc.\n\n## Group\n\n```go\nfunc (mx *Mux) Group(fn func(r Router)) Router\n```\n\nGroup creates a new inline-Mux with a copy of middleware stack. It's useful for a group of handlers along the same routing path that use an additional set of middlewares. See \\_examples/.\n\n## Handle\n\n```go\nfunc (mx *Mux) Handle(pattern string, handler http.Handler)\n```\n\nHandle adds the route `pattern` that matches any http method to execute the `handler` http.Handler.\n\n## HandleFunc\n\n```go\nfunc (mx *Mux) HandleFunc(pattern string, handlerFn http.HandlerFunc)\n```\n\nHandleFunc adds the route `pattern` that matches any http method to execute the `handlerFn` http.HandlerFunc.\n\n## Head\n\n```go\nfunc (mx *Mux) Head(pattern string, handlerFn http.HandlerFunc)\n```\n\nHead adds the route `pattern` that matches a HEAD http method to execute the `handlerFn` http.HandlerFunc.\n\n## Match\n\n```go\nfunc (mx *Mux) Match(rctx *Context, method, path string) bool\n```\n\nMatch searches the routing tree for a handler that matches the method/path. It's similar to routing a http request, but without executing the handler thereafter.\n\nNote: the \\*Context state is updated during execution, so manage the state carefully or make a NewRouteContext().\n\n## Method\n\n```go\nfunc (mx *Mux) Method(method, pattern string, handler http.Handler)\n```\n\nMethod adds the route `pattern` that matches `method` http method to execute the `handler` http.Handler.\n\n## MethodFunc\n\n```go\nfunc (mx *Mux) MethodFunc(method, pattern string, handlerFn http.HandlerFunc)\n```\n\nMethodFunc adds the route `pattern` that matches `method` http method to execute the `handlerFn` http.HandlerFunc.\n\n## MethodNotAllowed\n\n```go\nfunc (mx *Mux) MethodNotAllowed(handlerFn http.HandlerFunc)\n```\n\nMethodNotAllowed sets a custom http.HandlerFunc for routing paths where the method is unresolved. The default handler returns a 405 with an empty body.\n\n## MethodNotAllowedHandler\n\n```go\nfunc (mx *Mux) MethodNotAllowedHandler(methodsAllowed ...methodTyp) http.HandlerFunc\n```\n\nMethodNotAllowedHandler returns the default Mux 405 responder whenever a method cannot be resolved for a route.\n\n## Middlewares\n\n```go\nfunc (mx *Mux) Middlewares() Middlewares\n```\n\nMiddlewares returns a slice of middleware handler functions.\n\n## Mount\n\n```go\nfunc (mx *Mux) Mount(pattern string, handler http.Handler)\n```\n\nMount attaches another http.Handler or chi Router as a subrouter along a routing path. It's very useful to split up a large API as many independent routers and compose them as a single service using Mount. See \\_examples/.\n\nNote that Mount() simply sets a wildcard along the `pattern` that will continue routing at the `handler`, which in most cases is another chi.Router. As a result, if you define two Mount() routes on the exact same pattern the mount will panic.\n\n## NotFound\n\n```go\nfunc (mx *Mux) NotFound(handlerFn http.HandlerFunc)\n```\n\nNotFound sets a custom http.HandlerFunc for routing paths that could not be found. The default 404 handler is `http.NotFound`.\n\n## NotFoundHandler\n\n```go\nfunc (mx *Mux) NotFoundHandler() http.HandlerFunc\n```\n\nNotFoundHandler returns the default Mux 404 responder whenever a route cannot be found.\n\n## Options\n\n```go\nfunc (mx *Mux) Options(pattern string, handlerFn http.HandlerFunc)\n```\n\nOptions adds the route `pattern` that matches an OPTIONS http method to execute the `handlerFn` http.HandlerFunc.\n\n## Patch\n\n```go\nfunc (mx *Mux) Patch(pattern string, handlerFn http.HandlerFunc)\n```\n\nPatch adds the route `pattern` that matches a PATCH http method to execute the `handlerFn` http.HandlerFunc.\n\n## Post\n\n```go\nfunc (mx *Mux) Post(pattern string, handlerFn http.HandlerFunc)\n```\n\nPost adds the route `pattern` that matches a POST http method to execute the `handlerFn` http.HandlerFunc.\n\n## Put\n\n```go\nfunc (mx *Mux) Put(pattern string, handlerFn http.HandlerFunc)\n```\n\nPut adds the route `pattern` that matches a PUT http method to execute the `handlerFn` http.HandlerFunc.\n\n## Query\n\n```go\nfunc (mx *Mux) Query(pattern string, handlerFn http.HandlerFunc)\n```\n\nQuery adds the route `pattern` that matches a QUERY http method to execute the `handlerFn` http.HandlerFunc.\n\n## Route\n\n```go\nfunc (mx *Mux) Route(pattern string, fn func(r Router)) Router\n```\n\nRoute creates a new Mux and mounts it along the `pattern` as a subrouter. Effectively, this is a short-hand call to Mount. See \\_examples/.\n\n## Routes\n\n```go\nfunc (mx *Mux) Routes() []Route\n```\n\nRoutes returns a slice of routing information from the tree, useful for traversing available routes of a router.\n\n## ServeHTTP\n\n```go\nfunc (mx *Mux) ServeHTTP(w http.ResponseWriter, r *http.Request)\n```\n\nServeHTTP is the single method of the http.Handler interface that makes Mux interoperable with the standard library. It uses a sync.Pool to get and reuse routing contexts for each request.\n\n## Trace\n\n```go\nfunc (mx *Mux) Trace(pattern string, handlerFn http.HandlerFunc)\n```\n\nTrace adds the route `pattern` that matches a TRACE http method to execute the `handlerFn` http.HandlerFunc.\n\n## Use\n\n```go\nfunc (mx *Mux) Use(middlewares ...func(http.Handler) http.Handler)\n```\n\nUse appends a middleware handler to the Mux middleware stack.\n\nThe middleware stack for any Mux will execute before searching for a matching route to a specific handler, which provides opportunity to respond early, change the course of the request execution, or set request-scoped values for the next http.Handler.\n\n## With\n\n```go\nfunc (mx *Mux) With(middlewares ...func(http.Handler) http.Handler) Router\n```\n\nWith adds inline middlewares for an endpoint handler.\n\n## Route\n\n```go\ntype Route struct {\n\tSubRoutes Routes\n\tHandlers  map[string]http.Handler\n\tPattern   string\n}\n```\n\nRoute describes the details of a routing handler. Handlers map key is an HTTP method\n\n- `SubRoutes: Routes`: \n- `Handlers: map[string]http.Handler`: \n- `Pattern: string`: \n\n## RouteParams\n\n```go\ntype RouteParams struct {\n\tKeys, Values []string\n}\n```\n\nRouteParams is a structure to track URL routing parameters efficiently.\n\n- `Keys: []string`: \n- `Values: []string`: \n\n## Add\n\n```go\nfunc (s *RouteParams) Add(key, value string)\n```\n\nAdd will append a URL parameter to the end of the route param\n\n## Router\n\n```go\ntype Router interface {\n\thttp.Handler\n\tRoutes\n\n\t// Use appends one or more middlewares onto the Router stack.\n\tUse(middlewares ...func(http.Handler) http.Handler)\n\n\t// With adds inline middlewares for an endpoint handler.\n\tWith(middlewares ...func(http.Handler) http.Handler) Router\n\n\t// Group adds a new inline-Router along the current routing\n\t// path, with a fresh middleware stack for the inline-Router.\n\tGroup(fn func(r Router)) Router\n\n\t// Route mounts a sub-Router along a `pattern` string.\n\tRoute(pattern string, fn func(r Router)) Router\n\n\t// Mount attaches another http.Handler along ./pattern/*\n\tMount(pattern string, h http.Handler)\n\n\t// Handle and HandleFunc adds routes for `pattern` that matches\n\t// all HTTP methods.\n\tHandle(pattern string, h http.Handler)\n\tHandleFunc(pattern string, h http.HandlerFunc)\n\n\t// Method and MethodFunc adds routes for `pattern` that matches\n\t// the `method` HTTP method.\n\tMethod(method, pattern string, h http.Handler)\n\tMethodFunc(method, pattern string, h http.HandlerFunc)\n\n\t// HTTP-method routing along `pattern`\n\tConnect(pattern string, h http.HandlerFunc)\n\tDelete(pattern string, h http.HandlerFunc)\n\tGet(pattern string, h http.HandlerFunc)\n\tHead(pattern string, h http.HandlerFunc)\n\tOptions(pattern string, h http.HandlerFunc)\n\tPatch(pattern string, h http.HandlerFunc)\n\tPost(pattern string, h http.HandlerFunc)\n\tPut(pattern string, h http.HandlerFunc)\n\tQuery(pattern string, h http.HandlerFunc)\n\tTrace(pattern string, h http.HandlerFunc)\n\n\t// NotFound defines a handler to respond whenever a route could\n\t// not be found.\n\tNotFound(h http.HandlerFunc)\n\n\t// MethodNotAllowed defines a handler to respond whenever a method is\n\t// not allowed.\n\tMethodNotAllowed(h http.HandlerFunc)\n}\n```\n\nRouter consisting of the core routing methods used by chi's Mux, using only the standard net/http.\n\n- `http.Handler: http.Handler`: \n- `Routes: Routes`: \n- `Use: func(middlewares ...func(http.Handler) http.Handler)`: Use appends one or more middlewares onto the Router stack.\n- `With: func(middlewares ...func(http.Handler) http.Handler) Router`: With adds inline middlewares for an endpoint handler.\n- `Group: func(fn func(r Router)) Router`: Group adds a new inline-Router along the current routing path, with a fresh middleware stack for the inline-Router.\n- `Route: func(pattern string, fn func(r Router)) Router`: Route mounts a sub-Router along a `pattern` string.\n- `Mount: func(pattern string, h http.Handler)`: Mount attaches another http.Handler along ./pattern/\\*\n- `Handle: func(pattern string, h http.Handler)`: Handle and HandleFunc adds routes for `pattern` that matches all HTTP methods.\n- `HandleFunc: func(pattern string, h http.HandlerFunc)`: \n- `Method: func(method, pattern string, h http.Handler)`: Method and MethodFunc adds routes for `pattern` that matches the `method` HTTP method.\n- `MethodFunc: func(method, pattern string, h http.HandlerFunc)`: \n- `Connect: func(pattern string, h http.HandlerFunc)`: HTTP-method routing along `pattern`\n- `Delete: func(pattern string, h http.HandlerFunc)`: \n- `Get: func(pattern string, h http.HandlerFunc)`: \n- `Head: func(pattern string, h http.HandlerFunc)`: \n- `Options: func(pattern string, h http.HandlerFunc)`: \n- `Patch: func(pattern string, h http.HandlerFunc)`: \n- `Post: func(pattern string, h http.HandlerFunc)`: \n- `Put: func(pattern string, h http.HandlerFunc)`: \n- `Query: func(pattern string, h http.HandlerFunc)`: \n- `Trace: func(pattern string, h http.HandlerFunc)`: \n- `NotFound: func(h http.HandlerFunc)`: NotFound defines a handler to respond whenever a route could not be found.\n- `MethodNotAllowed: func(h http.HandlerFunc)`: MethodNotAllowed defines a handler to respond whenever a method is not allowed.\n\n## Routes\n\n```go\ntype Routes interface {\n\t// Routes returns the routing tree in an easily traversable structure.\n\tRoutes() []Route\n\n\t// Middlewares returns the list of middlewares in use by the router.\n\tMiddlewares() Middlewares\n\n\t// Match searches the routing tree for a handler that matches\n\t// the method/path - similar to routing a http request, but without\n\t// executing the handler thereafter.\n\tMatch(rctx *Context, method, path string) bool\n\n\t// Find searches the routing tree for the pattern that matches\n\t// the method/path.\n\tFind(rctx *Context, method, path string) string\n}\n```\n\nRoutes interface adds two methods for router traversal, which is also used by the `docgen` subpackage to generation documentation for Routers.\n\n- `Routes: func() []Route`: Routes returns the routing tree in an easily traversable structure.\n- `Middlewares: func() Middlewares`: Middlewares returns the list of middlewares in use by the router.\n- `Match: func(rctx *Context, method, path string) bool`: Match searches the routing tree for a handler that matches the method/path - similar to routing a http request, but without executing the handler thereafter.\n- `Find: func(rctx *Context, method, path string) string`: Find searches the routing tree for the pattern that matches the method/path.\n\n## WalkFunc\n\n```go\ntype WalkFunc func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error\n```\n\nWalkFunc is the type of the function called for each method and route visited by Walk.",
+      "symbols": [
+        {
+          "name": "var RouteCtxKey",
+          "kind": "go variable",
+          "anchor": "var-RouteCtxKey"
+        },
+        {
+          "name": "func Chain(middlewares ...func(http.Handler) http.Handler) Middlewares",
+          "kind": "go function",
+          "anchor": "func-Chain"
+        },
+        {
+          "name": "func NewMux() *Mux",
+          "kind": "go function",
+          "anchor": "func-NewMux"
+        },
+        {
+          "name": "func NewRouteContext() *Context",
+          "kind": "go function",
+          "anchor": "func-NewRouteContext"
+        },
+        {
+          "name": "func NewRouter() *Mux",
+          "kind": "go function",
+          "anchor": "func-NewRouter"
+        },
+        {
+          "name": "func RegisterMethod(method string)",
+          "kind": "go function",
+          "anchor": "func-RegisterMethod"
+        },
+        {
+          "name": "func RouteContext(ctx context.Context) *Context",
+          "kind": "go function",
+          "anchor": "func-RouteContext"
+        },
+        {
+          "name": "func URLParam(r *http.Request, key string) string",
+          "kind": "go function",
+          "anchor": "func-URLParam"
+        },
+        {
+          "name": "func URLParamFromCtx(ctx context.Context, key string) string",
+          "kind": "go function",
+          "anchor": "func-URLParamFromCtx"
+        },
+        {
+          "name": "func Walk(r Routes, walkFn WalkFunc) error",
+          "kind": "go function",
+          "anchor": "func-Walk"
+        },
+        {
+          "name": "type ChainHandler",
+          "kind": "go type",
+          "anchor": "type-ChainHandler"
+        },
+        {
+          "name": "ChainHandler.ServeHTTP",
+          "kind": "go method",
+          "anchor": "method-ChainHandler-ServeHTTP"
+        },
+        {
+          "name": "type Context",
+          "kind": "go type",
+          "anchor": "type-Context"
+        },
+        {
+          "name": "Context.Clone",
+          "kind": "go method",
+          "anchor": "method-Context-Clone"
+        },
+        {
+          "name": "Context.Reset",
+          "kind": "go method",
+          "anchor": "method-Context-Reset"
+        },
+        {
+          "name": "Context.RoutePattern",
+          "kind": "go method",
+          "anchor": "method-Context-RoutePattern"
+        },
+        {
+          "name": "Context.URLParam",
+          "kind": "go method",
+          "anchor": "method-Context-URLParam"
+        },
+        {
+          "name": "type Middlewares",
+          "kind": "go type",
+          "anchor": "type-Middlewares"
+        },
+        {
+          "name": "Middlewares.Handler",
+          "kind": "go method",
+          "anchor": "method-Middlewares-Handler"
+        },
+        {
+          "name": "Middlewares.HandlerFunc",
+          "kind": "go method",
+          "anchor": "method-Middlewares-HandlerFunc"
+        },
+        {
+          "name": "type Mux",
+          "kind": "go type",
+          "anchor": "type-Mux"
+        },
+        {
+          "name": "Mux.Connect",
+          "kind": "go method",
+          "anchor": "method-Mux-Connect"
+        },
+        {
+          "name": "Mux.Delete",
+          "kind": "go method",
+          "anchor": "method-Mux-Delete"
+        },
+        {
+          "name": "Mux.Find",
+          "kind": "go method",
+          "anchor": "method-Mux-Find"
+        },
+        {
+          "name": "Mux.Get",
+          "kind": "go method",
+          "anchor": "method-Mux-Get"
+        },
+        {
+          "name": "Mux.Group",
+          "kind": "go method",
+          "anchor": "method-Mux-Group"
+        },
+        {
+          "name": "Mux.Handle",
+          "kind": "go method",
+          "anchor": "method-Mux-Handle"
+        },
+        {
+          "name": "Mux.HandleFunc",
+          "kind": "go method",
+          "anchor": "method-Mux-HandleFunc"
+        },
+        {
+          "name": "Mux.Head",
+          "kind": "go method",
+          "anchor": "method-Mux-Head"
+        },
+        {
+          "name": "Mux.Match",
+          "kind": "go method",
+          "anchor": "method-Mux-Match"
+        },
+        {
+          "name": "Mux.Method",
+          "kind": "go method",
+          "anchor": "method-Mux-Method"
+        },
+        {
+          "name": "Mux.MethodFunc",
+          "kind": "go method",
+          "anchor": "method-Mux-MethodFunc"
+        },
+        {
+          "name": "Mux.MethodNotAllowed",
+          "kind": "go method",
+          "anchor": "method-Mux-MethodNotAllowed"
+        },
+        {
+          "name": "Mux.MethodNotAllowedHandler",
+          "kind": "go method",
+          "anchor": "method-Mux-MethodNotAllowedHandler"
+        },
+        {
+          "name": "Mux.Middlewares",
+          "kind": "go method",
+          "anchor": "method-Mux-Middlewares"
+        },
+        {
+          "name": "Mux.Mount",
+          "kind": "go method",
+          "anchor": "method-Mux-Mount"
+        },
+        {
+          "name": "Mux.NotFound",
+          "kind": "go method",
+          "anchor": "method-Mux-NotFound"
+        },
+        {
+          "name": "Mux.NotFoundHandler",
+          "kind": "go method",
+          "anchor": "method-Mux-NotFoundHandler"
+        },
+        {
+          "name": "Mux.Options",
+          "kind": "go method",
+          "anchor": "method-Mux-Options"
+        },
+        {
+          "name": "Mux.Patch",
+          "kind": "go method",
+          "anchor": "method-Mux-Patch"
+        },
+        {
+          "name": "Mux.Post",
+          "kind": "go method",
+          "anchor": "method-Mux-Post"
+        },
+        {
+          "name": "Mux.Put",
+          "kind": "go method",
+          "anchor": "method-Mux-Put"
+        },
+        {
+          "name": "Mux.Query",
+          "kind": "go method",
+          "anchor": "method-Mux-Query"
+        },
+        {
+          "name": "Mux.Route",
+          "kind": "go method",
+          "anchor": "method-Mux-Route"
+        },
+        {
+          "name": "Mux.Routes",
+          "kind": "go method",
+          "anchor": "method-Mux-Routes"
+        },
+        {
+          "name": "Mux.ServeHTTP",
+          "kind": "go method",
+          "anchor": "method-Mux-ServeHTTP"
+        },
+        {
+          "name": "Mux.Trace",
+          "kind": "go method",
+          "anchor": "method-Mux-Trace"
+        },
+        {
+          "name": "Mux.Use",
+          "kind": "go method",
+          "anchor": "method-Mux-Use"
+        },
+        {
+          "name": "Mux.With",
+          "kind": "go method",
+          "anchor": "method-Mux-With"
+        },
+        {
+          "name": "type Route",
+          "kind": "go type",
+          "anchor": "type-Route"
+        },
+        {
+          "name": "type RouteParams",
+          "kind": "go type",
+          "anchor": "type-RouteParams"
+        },
+        {
+          "name": "RouteParams.Add",
+          "kind": "go method",
+          "anchor": "method-RouteParams-Add"
+        },
+        {
+          "name": "type Router",
+          "kind": "go type",
+          "anchor": "type-Router"
+        },
+        {
+          "name": "type Routes",
+          "kind": "go type",
+          "anchor": "type-Routes"
+        },
+        {
+          "name": "type WalkFunc",
+          "kind": "go type",
+          "anchor": "type-WalkFunc"
+        }
+      ],
+      "documentId": "package-root",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api/package-root.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api/package-root.md"
+        }
+      ]
+    },
+    {
+      "id": "go-api/pkg-middleware.md",
+      "kind": "page",
+      "title": "middleware",
+      "description": "github.com/go-chi/chi/v5/middleware",
+      "tab": "go-api",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api/pkg-middleware.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api/pkg-middleware.md",
+      "file": "go-api/pkg-middleware.md",
+      "searchText": "## RequestIDKey\n\n```go\nconst RequestIDKey ctxKeyRequestID = 0\n```\n\nRequestIDKey is the key that holds the unique request ID in a request context.\n\n## LogEntryCtxKey\n\n```go\nvar (\n\t// LogEntryCtxKey is the context.Context key to store the request log entry.\n\tLogEntryCtxKey = &contextKey{\"LogEntry\"}\n\n\t// DefaultLogger is called by the Logger middleware handler to log each request.\n\t// Its made a package-level variable so that it can be reconfigured for custom\n\t// logging configurations.\n\tDefaultLogger func(next http.Handler) http.Handler\n)\n```\n\n## DefaultLogger\n\n```go\nvar (\n\t// LogEntryCtxKey is the context.Context key to store the request log entry.\n\tLogEntryCtxKey = &contextKey{\"LogEntry\"}\n\n\t// DefaultLogger is called by the Logger middleware handler to log each request.\n\t// Its made a package-level variable so that it can be reconfigured for custom\n\t// logging configurations.\n\tDefaultLogger func(next http.Handler) http.Handler\n)\n```\n\n## IsTTY\n\n```go\nvar IsTTY bool\n```\n\n## RequestIDHeader\n\n```go\nvar RequestIDHeader = \"X-Request-Id\"\n```\n\nRequestIDHeader is the name of the HTTP Header which contains the request id. Exported so that it can be changed by developers\n\n## URLFormatCtxKey\n\n```go\nvar (\n\t// URLFormatCtxKey is the context.Context key to store the URL format data\n\t// for a request.\n\tURLFormatCtxKey = &contextKey{\"URLFormat\"}\n)\n```\n\n## AllowContentEncoding\n\n```go\nfunc AllowContentEncoding(contentEncoding ...string) func(next http.Handler) http.Handler\n```\n\nAllowContentEncoding enforces a whitelist of request Content-Encoding otherwise responds with a 415 Unsupported Media Type status.\n\n## AllowContentType\n\n```go\nfunc AllowContentType(contentTypes ...string) func(http.Handler) http.Handler\n```\n\nAllowContentType enforces a whitelist of request Content-Types otherwise responds with a 415 Unsupported Media Type status.\n\n## BasicAuth\n\n```go\nfunc BasicAuth(realm string, creds map[string]string) func(next http.Handler) http.Handler\n```\n\nBasicAuth implements a simple middleware handler for adding basic http auth to a route.\n\n## CleanPath\n\n```go\nfunc CleanPath(next http.Handler) http.Handler\n```\n\nCleanPath middleware will clean out double slash mistakes from a user's request path. For example, if a user requests /users//1 or //users////1 will both be treated as: /users/1\n\n## ClientIPFromHeader\n\n```go\nfunc ClientIPFromHeader(trustedHeader string, trustedIPPrefixes ...string) func(http.Handler) http.Handler\n```\n\nClientIPFromHeader stores the client IP from a single-IP header set by your reverse proxy. Read it with [GetClientIP](#func-GetClientIP).\n\nOnly safe with headers your proxy unconditionally OVERWRITES on every request, e.g.:\n\n  - X-Real-IP        — Nginx with ngx\\_http\\_realip\\_module\n  - X-Client-IP      — Apache with mod\\_remoteip\n  - CF-Connecting-IP — Cloudflare\n\nTrue-Client-IP, X-Azure-ClientIP, and Fastly-Client-IP look similar but pass through from the client by default in those products; don't use them unless your edge strips the inbound value.\n\nIf the header reaches us with multiple values (misconfigured proxy that appends, or a downstream proxy not stripping a client-supplied value), the LAST value wins — that's the one set by the hop closest to us, and therefore the most trusted. Fail-closed if the last value doesn't parse: no client IP is set rather than falling back to earlier (less-trusted) values.\n\nv4-mapped IPv6 (::ffff:a.b.c.d) folds to plain v4 and IPv6 zones are stripped before storage.\n\nOverwriting only protects requests that pass through your proxy. A client that reaches this server directly can set the header to anything. Pass your proxy's CIDR prefixes as trustedIPPrefixes to close that gap: the header is then read only when r.RemoteAddr falls within one of them; otherwise r.RemoteAddr itself is the client IP. This mirrors nginx (set\\_real\\_ip\\_from), Apache (RemoteIPTrustedProxy), and Caddy (trusted\\_proxies), and Cloudflare's advice to accept origin traffic only from its IP ranges. Without trustedIPPrefixes, guarantee at the network layer (security group / firewall) that only your proxy can reach this server.\n\n\tr.Use(middleware.ClientIPFromHeader(\"CF-Connecting-IP\",\n\t    \"173.245.48.0/20\", // Cloudflare IPv4, see https://www.cloudflare.com/ips/\n\t    \"2400:cb00::/32\",  // Cloudflare IPv6\n\t))\n\nPanics at startup if any prefix is invalid.\n\n## ClientIPFromRemoteAddr\n\n```go\nfunc ClientIPFromRemoteAddr(h http.Handler) http.Handler\n```\n\nClientIPFromRemoteAddr stores the client IP read from the TCP RemoteAddr of the incoming request — the IP address of whoever opened the connection to this server. Read it with [GetClientIP](#func-GetClientIP).\n\nUse this when this server is directly connected to the public internet with NO reverse proxy in front of it. Behind a reverse proxy, RemoteAddr is the proxy's IP, not the client's — use [ClientIPFromHeader](#func-ClientIPFromHeader) or [ClientIPFromXFF](#func-ClientIPFromXFF) instead.\n\nIPv4 clients on a dual-stack listener surface as ::ffff:a.b.c.d; they fold to plain v4 before storage so one logical client maps to one key. IPv6 zones are preserved (link-local connections may legitimately have one).\n\n## ClientIPFromXFF\n\n```go\nfunc ClientIPFromXFF(trustedIPPrefixes ...string) func(http.Handler) http.Handler\n```\n\nClientIPFromXFF stores the client IP read from the X-Forwarded-For header, walking the chain right-to-left and skipping any IP that falls within one of the given trusted CIDR prefixes. The first IP that is not trusted is the client. Read it with [GetClientIP](#func-GetClientIP).\n\nAn unparseable entry mid-chain aborts the walk and leaves no client IP set (fail-closed) — we can't safely trust anything left of garbage.\n\nUse this when you sit behind one or more reverse proxies whose IP ranges you can enumerate as CIDRs. Most CDNs publish their IPs:\n\n\tCloudflare:   https://www.cloudflare.com/ips/\n\tAWS:          https://ip-ranges.amazonaws.com/ip-ranges.json\n\tFastly:       https://api.fastly.com/public-ip-list\n\tGoogle Cloud: https://www.gstatic.com/ipranges/cloud.json\n\nExample (CloudFront):\n\n\tr.Use(middleware.ClientIPFromXFF(\n\t    \"13.32.0.0/15\",   // CloudFront IPv4\n\t    \"52.46.0.0/18\",   // CloudFront IPv4\n\t    \"2600:9000::/28\", // CloudFront IPv6\n\t))\n\nThe TCP peer in r.RemoteAddr is treated as the rightmost hop: if it is not within a trusted prefix, it is the client IP and X-Forwarded-For is ignored. A client reaching this server directly therefore cannot spoof its IP. If r.RemoteAddr doesn't parse, no client IP is set (fail-closed).\n\nAt least one prefix is required. For a single trusted hop directly in front of this server (e.g., nginx on localhost), pass its address:\n\n\tr.Use(middleware.ClientIPFromXFF(\"127.0.0.1/32\", \"::1/128\"))\n\nv4-mapped IPv6 (::ffff:a.b.c.d) folds to plain v4 and IPv6 zones are stripped before the prefix check and storage; otherwise an attacker could use either notation to alias a trusted IP past the check.\n\nIf you know the number of trusted proxies but not their IPs, use [ClientIPFromXFFTrustedProxies](#func-ClientIPFromXFFTrustedProxies) instead.\n\nPanics at startup if no prefix is given or any prefix is invalid.\n\n## ClientIPFromXFFTrustedProxies\n\n```go\nfunc ClientIPFromXFFTrustedProxies(numTrustedProxies int) func(http.Handler) http.Handler\n```\n\nClientIPFromXFFTrustedProxies stores the client IP read from X-Forwarded-For, given the exact number of trusted reverse proxies between this server and the public internet. Read it with [GetClientIP](#func-GetClientIP).\n\nPREFER [ClientIPFromXFF](#func-ClientIPFromXFF) with explicit CIDRs whenever you can — it cannot off-by-one and is robust to architecture changes. Most CDNs publish their IP ranges (Cloudflare, AWS, Fastly, Google Cloud). Use this counting variant only when proxy IPs are dynamic and unpublishable.\n\nnumTrustedProxies = total proxy hops between the client and this server. Count every hop in the request path:\n\n\tSingle proxy (one LB / nginx / Heroku / Fly.io / Render) ....... 1\n\tTwo proxies  (Cloudflare → ALB, CloudFront → ALB) .............. 2\n\tThree proxies (CDN → API gateway → LB) ......................... 3\n\nVERIFY BEFORE GOING LIVE: send a request from a known IP and confirm [GetClientIP](#func-GetClientIP) returns that IP. If it returns a proxy IP, your count is too LOW — a client can spoof their IP, fix immediately. If it returns \"\", your count is too HIGH — no leak, but no client IP either.\n\nThis middleware reads ONLY X-Forwarded-For; it does not inspect r.RemoteAddr. Guarantee at the network layer (security group / firewall) that only your proxies can reach this server.\n\nIf the XFF chain has fewer than numTrustedProxies entries, no client IP is set (fail-closed). Like [ClientIPFromXFF](#func-ClientIPFromXFF), v4-mapped IPv6 folds to v4 and IPv6 zones are stripped before storage.\n\nPanics at startup if numTrustedProxies \\< 1.\n\n## Compress\n\n```go\nfunc Compress(level int, types ...string) func(next http.Handler) http.Handler\n```\n\nCompress is a middleware that compresses response body of a given content types to a data format based on Accept-Encoding request header. It uses a given compression level.\n\nNOTE: make sure to set the Content-Type header on your response otherwise this middleware will not compress the response body. For ex, in your handler you should set w.Header().Set(\"Content-Type\", http.DetectContentType(yourBody)) or set it manually.\n\nPassing a compression level of 5 is sensible value\n\n## ContentCharset\n\n```go\nfunc ContentCharset(charsets ...string) func(next http.Handler) http.Handler\n```\n\nContentCharset generates a handler that writes a 415 Unsupported Media Type response if none of the charsets match. An empty charset will allow requests with no Content-Type header or no specified charset. Requests without a body (ContentLength == 0) are always allowed. Quoted charset values, such as charset=\"UTF-8\", are accepted.\n\n## Deprecation\n\n```go\nfunc Deprecation(deprecatedAt time.Time, links ...string) func(http.Handler) http.Handler\n```\n\nDeprecation marks a route as deprecated, per RFC 9745. [https://www.rfc-editor.org/rfc/rfc9745.html](https://www.rfc-editor.org/rfc/rfc9745.html)\n\nUse it from the day you decide to retire a route. The route keeps working, and clients are told to migrate. When you know the removal date, add [Sunset](#func-Sunset). Middleware order doesn't matter.\n\ndeprecatedAt is when the route was, or will be, deprecated. A past date is fine. It panics if deprecatedAt is the zero time, which is usually an unset value. Pass a real date, or skip the middleware when no date is set.\n\nEach link is added as-is as a Link header, so it must be a full RFC 8288 value, e.g. `<[https://example.com/migrate](https://example.com/migrate)>; rel=\"deprecation\"`.\n\n## GetClientIP\n\n```go\nfunc GetClientIP(ctx context.Context) string\n```\n\nGetClientIP returns the client IP as a string, as set by one of the ClientIPFrom\\* middlewares. Returns \"\" if no valid IP was set. Convenient for logging, rate-limit keys, etc.\n\n## GetClientIPAddr\n\n```go\nfunc GetClientIPAddr(ctx context.Context) netip.Addr\n```\n\nGetClientIPAddr returns the client IP as a [netip.Addr](https://pkg.go.dev/net/netip#Addr), as set by one of the ClientIPFrom\\* middlewares. The returned Addr is the zero value if not set; use [netip.Addr.IsValid](https://pkg.go.dev/net/netip#Addr.IsValid) to check. Useful when you need typed work — prefix containment, Is4/Is6, etc. — without re-parsing the string.\n\n## GetHead\n\n```go\nfunc GetHead(next http.Handler) http.Handler\n```\n\nGetHead automatically route undefined HEAD requests to GET handlers.\n\n## GetLogEntry\n\n```go\nfunc GetLogEntry(r *http.Request) LogEntry\n```\n\nGetLogEntry returns the in-context LogEntry for a request.\n\n## GetReqID\n\n```go\nfunc GetReqID(ctx context.Context) string\n```\n\nGetReqID returns a request ID from the given context if one is present. Returns the empty string if a request ID cannot be found.\n\n## Heartbeat\n\n```go\nfunc Heartbeat(endpoint string) func(http.Handler) http.Handler\n```\n\nHeartbeat endpoint middleware useful to setting up a path like `/ping` that load balancers or uptime testing external services can make a request before hitting any routes. It's also convenient to place this above ACL middlewares as well.\n\n## Logger\n\n```go\nfunc Logger(next http.Handler) http.Handler\n```\n\nLogger is a middleware that logs the start and end of each request, along with some useful data about what was requested, what the response status was, and how long it took to return. When standard output is a TTY, Logger will print in color, otherwise it will print in black and white. Logger prints a request ID if one is provided.\n\nAlternatively, look at [https://github.com/goware/httplog](https://github.com/goware/httplog) for a more in-depth http logger with structured logging support.\n\nIMPORTANT NOTE: Logger should go before any other middleware that may change the response, such as middleware.Recoverer. Example:\n\n\tr := chi.NewRouter()\n\tr.Use(middleware.Logger)        // <--<< Logger should come before Recoverer\n\tr.Use(middleware.Recoverer)\n\tr.Get(\"/\", handler)\n\n## Maybe\n\n```go\nfunc Maybe(mw func(http.Handler) http.Handler, maybeFn func(r *http.Request) bool) func(http.Handler) http.Handler\n```\n\nMaybe middleware will allow you to change the flow of the middleware stack execution depending on return value of maybeFn(request). This is useful for example if you'd like to skip a middleware handler if a request does not satisfy the maybeFn logic.\n\n## New\n\n```go\nfunc New(h http.Handler) func(next http.Handler) http.Handler\n```\n\nNew will create a new middleware handler from a http.Handler.\n\n## NewCompressor\n\n```go\nfunc NewCompressor(level int, types ...string) *Compressor\n```\n\nNewCompressor creates a new Compressor that will handle encoding responses.\n\nThe level should be one of the ones defined in the flate package. The types are the content types that are allowed to be compressed.\n\nCatch-all wildcards (\"\\*/\\*\", \"/\\*\") are rejected: compressing every response wastes CPU on already-compressed types like zip, jpeg or png. Pass explicit types instead, e.g. \"text/html\" or \"application/\\*\".\n\n## NewPattern\n\n```go\nfunc NewPattern(value string) Pattern\n```\n\n## NewWrapResponseWriter\n\n```go\nfunc NewWrapResponseWriter(w http.ResponseWriter, protoMajor int) WrapResponseWriter\n```\n\nNewWrapResponseWriter wraps an http.ResponseWriter, returning a proxy that allows you to hook into various parts of the response process.\n\n## NextRequestID\n\n```go\nfunc NextRequestID() uint64\n```\n\nNextRequestID generates the next request ID in the sequence.\n\n## NoCache\n\n```go\nfunc NoCache(h http.Handler) http.Handler\n```\n\nNoCache is a simple piece of middleware that sets a number of HTTP headers to prevent a router (or subrouter) from being cached by an upstream proxy and/or client.\n\nAs per [http://wiki.nginx.org/HttpProxyModule](http://wiki.nginx.org/HttpProxyModule) - NoCache sets:\n\n\tExpires: Thu, 01 Jan 1970 00:00:00 UTC\n\tCache-Control: no-cache, private, max-age=0\n\tX-Accel-Expires: 0\n\tPragma: no-cache (for HTTP/1.0 proxies/clients)\n\n## PageRoute\n\n```go\nfunc PageRoute(path string, handler http.Handler) func(http.Handler) http.Handler\n```\n\nPageRoute is a simple middleware which allows you to route a static GET request at the middleware stack level.\n\n## PathRewrite\n\n```go\nfunc PathRewrite(old, new string) func(http.Handler) http.Handler\n```\n\nPathRewrite is a simple middleware which allows you to rewrite the request URL path.\n\n## PrintPrettyStack\n\n```go\nfunc PrintPrettyStack(rvr any)\n```\n\n## Profiler\n\n```go\nfunc Profiler() http.Handler\n```\n\nProfiler is a convenient subrouter used for mounting net/http/pprof. ie.\n\n\tfunc MyService() http.Handler {\n\t\tr := chi.NewRouter()\n\t\t// ..middlewares\n\t\tr.Mount(\"/debug\", middleware.Profiler())\n\t\t// ..routes\n\t\treturn r\n\t}\n\n## RealIP\n\n```go\nfunc RealIP(h http.Handler) http.Handler\n```\n\nRealIP is a middleware that sets a http.Request's RemoteAddr to the results of parsing either the True-Client-IP, X-Real-IP or the X-Forwarded-For headers (in that order).\n\nDeprecated: RealIP is vulnerable to IP spoofing — it mutates r.RemoteAddr to the leftmost X-Forwarded-For value, or to True-Client-IP / X-Real-IP whether or not your infrastructure actually sets them. See GHSA-3fxj-6jh8-hvhx, GHSA-rjr7-jggh-pgcp, GHSA-9g5q-2w5x-hmxf.\n\nUse [ClientIPFromHeader](#func-ClientIPFromHeader), [ClientIPFromXFF](#func-ClientIPFromXFF), [ClientIPFromXFFTrustedProxies](#func-ClientIPFromXFFTrustedProxies) or [ClientIPFromRemoteAddr](#func-ClientIPFromRemoteAddr) and read the IP with [GetClientIP](#func-GetClientIP) instead. These never mutate r.RemoteAddr.\n\n## Recoverer\n\n```go\nfunc Recoverer(next http.Handler) http.Handler\n```\n\nRecoverer is a middleware that recovers from panics, logs the panic (and a backtrace), and returns a HTTP 500 (Internal Server Error) status if possible. Recoverer prints a request ID if one is provided.\n\nAlternatively, look at [https://github.com/go-chi/httplog](https://github.com/go-chi/httplog) middleware pkgs.\n\n## RedirectSlashes\n\n```go\nfunc RedirectSlashes(next http.Handler) http.Handler\n```\n\nRedirectSlashes is a middleware that will match request paths with a trailing slash and redirect to the same path, less the trailing slash.\n\nNOTE: RedirectSlashes middleware is \\*incompatible\\* with http.FileServer, see [https://github.com/go-chi/chi/issues/343](https://github.com/go-chi/chi/issues/343)\n\n## RequestID\n\n```go\nfunc RequestID(next http.Handler) http.Handler\n```\n\nRequestID is a middleware that injects a request ID into the context of each request. A request ID is a string of the form \"host.example.com/random-0001\", where \"random\" is a base62 random string that uniquely identifies this go process, and where the last number is an atomically incremented request counter.\n\n## RequestLogger\n\n```go\nfunc RequestLogger(f LogFormatter) func(next http.Handler) http.Handler\n```\n\nRequestLogger returns a logger handler using a custom LogFormatter.\n\n## RequestSize\n\n```go\nfunc RequestSize(bytes int64) func(http.Handler) http.Handler\n```\n\nRequestSize is a middleware that will limit request sizes to a specified number of bytes. It uses MaxBytesReader to do so.\n\n## RouteHeaders\n\n```go\nfunc RouteHeaders() HeaderRouter\n```\n\nRouteHeaders is a neat little header-based router that allows you to direct the flow of a request through a middleware stack based on a request header.\n\nFor example, lets say you'd like to setup multiple routers depending on the request Host header, you could then do something as so:\n\n\tr := chi.NewRouter()\n\trSubdomain := chi.NewRouter()\n\tr.Use(middleware.RouteHeaders().\n\t\tRoute(\"Host\", \"example.com\", middleware.New(r)).\n\t\tRoute(\"Host\", \"*.example.com\", middleware.New(rSubdomain)).\n\t\tHandler)\n\tr.Get(\"/\", h)\n\trSubdomain.Get(\"/\", h2)\n\nAnother example, imagine you want to setup multiple CORS handlers, where for your origin servers you allow authorized requests, but for third-party public requests, authorization is disabled.\n\n\tr := chi.NewRouter()\n\tr.Use(middleware.RouteHeaders().\n\t\tRoute(\"Origin\", \"https://app.skyweaver.net\", cors.Handler(cors.Options{\n\t\t\tAllowedOrigins:   []string{\"https://api.skyweaver.net\"},\n\t\t\tAllowedMethods:   []string{\"GET\", \"POST\", \"PUT\", \"DELETE\", \"OPTIONS\"},\n\t\t\tAllowedHeaders:   []string{\"Accept\", \"Authorization\", \"Content-Type\"},\n\t\t\tAllowCredentials: true, // <----------<<< allow credentials\n\t\t})).\n\t\tRoute(\"Origin\", \"*\", cors.Handler(cors.Options{\n\t\t\tAllowedOrigins:   []string{\"*\"},\n\t\t\tAllowedMethods:   []string{\"GET\", \"POST\", \"PUT\", \"DELETE\", \"OPTIONS\"},\n\t\t\tAllowedHeaders:   []string{\"Accept\", \"Content-Type\"},\n\t\t\tAllowCredentials: false, // <----------<<< do not allow credentials\n\t\t})).\n\t\tHandler)\n\n## SetHeader\n\n```go\nfunc SetHeader(key, value string) func(http.Handler) http.Handler\n```\n\nSetHeader is a convenience handler to set a response header key/value\n\n## StripPrefix\n\n```go\nfunc StripPrefix(prefix string) func(http.Handler) http.Handler\n```\n\nStripPrefix is a middleware that will strip the provided prefix from the request path before handing the request over to the next handler.\n\n## StripSlashes\n\n```go\nfunc StripSlashes(next http.Handler) http.Handler\n```\n\nStripSlashes is a middleware that will match request paths with a trailing slash, strip it from the path and continue routing through the mux, if a route matches, then it will serve the handler.\n\n## Sunset\n\n```go\nfunc Sunset(sunsetAt time.Time, links ...string) func(http.Handler) http.Handler\n```\n\nSunset announces when a route will stop working, per RFC 8594. [https://www.rfc-editor.org/rfc/rfc8594.html](https://www.rfc-editor.org/rfc/rfc8594.html)\n\nUse it once you know the removal date, and keep [Deprecation](#func-Deprecation) on the same route. Sunset alone is valid, but clients get no \"stop using this\" signal. Middleware order doesn't matter.\n\nsunsetAt is usually a future date, and should not be before the deprecation date. After it, remove the route or return 410 Gone. It panics if sunsetAt is the zero time, which is usually an unset value. Pass a real date, or skip the middleware when no date is set.\n\nEach link is added as-is as a Link header, so it must be a full RFC 8288 value, e.g. `<[https://example.com/migrate](https://example.com/migrate)>; rel=\"sunset\"`.\n\n## SupressNotFound\n\n```go\nfunc SupressNotFound(router *chi.Mux) func(next http.Handler) http.Handler\n```\n\nSupressNotFound will quickly respond with a 404 if the route is not found and will not continue to the next middleware handler.\n\nThis is handy to put at the top of your middleware stack to avoid unnecessary processing of requests that are not going to match any routes anyway. For example its super annoying to see a bunch of 404's in your logs from bots.\n\n## Throttle\n\n```go\nfunc Throttle(limit int) func(http.Handler) http.Handler\n```\n\nThrottle is a middleware that limits number of currently processed requests at a time across all users. Note: Throttle is not a rate-limiter per user, instead it just puts a ceiling on the number of current in-flight requests being processed from the point from where the Throttle middleware is mounted.\n\n## ThrottleBacklog\n\n```go\nfunc ThrottleBacklog(limit, backlogLimit int, backlogTimeout time.Duration) func(http.Handler) http.Handler\n```\n\nThrottleBacklog is a middleware that limits number of currently processed requests at a time and provides a backlog for holding a finite number of pending requests.\n\n## ThrottleWithOpts\n\n```go\nfunc ThrottleWithOpts(opts ThrottleOpts) func(http.Handler) http.Handler\n```\n\nThrottleWithOpts is a middleware that limits number of currently processed requests using passed ThrottleOpts.\n\n## Timeout\n\n```go\nfunc Timeout(timeout time.Duration) func(next http.Handler) http.Handler\n```\n\nTimeout is a middleware that cancels ctx after a given timeout and return a 504 Gateway Timeout error to the client.\n\nIt's required that you select the ctx.Done() channel to check for the signal if the context has reached its deadline and return, otherwise the timeout signal will be just ignored.\n\nie. a route/handler may look like:\n\n\tr.Get(\"/long\", func(w http.ResponseWriter, r *http.Request) {\n\t\tctx := r.Context()\n\t\tprocessTime := time.Duration(rand.Intn(4)+1) * time.Second\n\n\t\tselect {\n\t\tcase <-ctx.Done():\n\t\t\treturn\n\n\t\tcase <-time.After(processTime):\n\t\t\t// The above channel simulates some hard work.\n\t\t}\n\n\t\tw.Write([]byte(\"done\"))\n\t})\n\n## URLFormat\n\n```go\nfunc URLFormat(next http.Handler) http.Handler\n```\n\nURLFormat is a middleware that parses the url extension from a request path and stores it on the context as a string under the key `middleware.URLFormatCtxKey`. The middleware will trim the suffix from the routing path and continue routing.\n\nRouters should not include a url parameter for the suffix when using this middleware.\n\nSample usage for url paths `/articles/1`, `/articles/1.json` and `/articles/1.xml`:\n\n\tfunc routes() http.Handler {\n\t\tr := chi.NewRouter()\n\t\tr.Use(middleware.URLFormat)\n\n\t\tr.Get(\"/articles/{id}\", ListArticles)\n\n\t\treturn r\n\t}\n\n\tfunc ListArticles(w http.ResponseWriter, r *http.Request) {\n\t\turlFormat, _ := r.Context().Value(middleware.URLFormatCtxKey).(string)\n\n\t\tswitch urlFormat {\n\t\tcase \"json\":\n\t\t\trender.JSON(w, r, articles)\n\t\tcase \"xml:\"\n\t\t\trender.XML(w, r, articles)\n\t\tdefault:\n\t\t\trender.JSON(w, r, articles)\n\t\t}\n\t}\n\n## WithLogEntry\n\n```go\nfunc WithLogEntry(r *http.Request, entry LogEntry) *http.Request\n```\n\nWithLogEntry sets the in-context LogEntry for a request.\n\n## WithValue\n\n```go\nfunc WithValue(key, val any) func(next http.Handler) http.Handler\n```\n\nWithValue is a middleware that sets a given key/value in a context chain.\n\n## Compressor\n\n```go\ntype Compressor struct {\n\t// contains filtered or unexported fields\n}\n```\n\nCompressor represents a set of encoding configurations.\n\n## Handler\n\n```go\nfunc (c *Compressor) Handler(next http.Handler) http.Handler\n```\n\nHandler returns a new middleware that will compress the response based on the current Compressor.\n\n## SetEncoder\n\n```go\nfunc (c *Compressor) SetEncoder(encoding string, fn EncoderFunc)\n```\n\nSetEncoder can be used to set the implementation of a compression algorithm.\n\nThe encoding should be a standardised identifier. See: [https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding)\n\nFor example, add the Brotli algorithm:\n\n\timport \"github.com/google/brotli/go/cbrotli\"\n\n\tcompressor := middleware.NewCompressor(5, \"text/html\")\n\tcompressor.SetEncoder(\"br\", func(w io.Writer, level int) io.Writer {\n\t\treturn cbrotli.NewWriter(w, cbrotli.WriterOptions{Quality: level})\n\t})\n\nAlternatively, this Cgo-free Brotli module can be used:\n\n\timport \"github.com/andybalholm/brotli\"\n\n\tcompressor := middleware.NewCompressor(5, \"text/html\")\n\n\tcompressor.SetEncoder(\"br\", func(w io.Writer, level int) io.Writer {\n\t\treturn brotli.NewWriterV2(w, level)\n\t})\n\n## DefaultLogFormatter\n\n```go\ntype DefaultLogFormatter struct {\n\tLogger  LoggerInterface\n\tNoColor bool\n}\n```\n\nDefaultLogFormatter is a simple logger that implements a LogFormatter.\n\n- `Logger: LoggerInterface`: \n- `NoColor: bool`: \n\n## NewLogEntry\n\n```go\nfunc (l *DefaultLogFormatter) NewLogEntry(r *http.Request) LogEntry\n```\n\nNewLogEntry creates a new LogEntry for the request.\n\n## EncoderFunc\n\n```go\ntype EncoderFunc func(w io.Writer, level int) io.Writer\n```\n\nAn EncoderFunc is a function that wraps the provided io.Writer with a streaming compression algorithm and returns it.\n\nIn case of failure, the function should return nil.\n\n## HeaderRoute\n\n```go\ntype HeaderRoute struct {\n\tMiddleware func(next http.Handler) http.Handler\n\tMatchOne   Pattern\n\tMatchAny   []Pattern\n}\n```\n\n- `Middleware: func(next http.Handler) http.Handler`: \n- `MatchOne: Pattern`: \n- `MatchAny: []Pattern`: \n\n## IsMatch\n\n```go\nfunc (r HeaderRoute) IsMatch(value string) bool\n```\n\n## HeaderRouter\n\n```go\ntype HeaderRouter map[string][]HeaderRoute\n```\n\n## Handler\n\n```go\nfunc (hr HeaderRouter) Handler(next http.Handler) http.Handler\n```\n\n## Route\n\n```go\nfunc (hr HeaderRouter) Route(header, match string, middlewareHandler func(next http.Handler) http.Handler) HeaderRouter\n```\n\n## RouteAny\n\n```go\nfunc (hr HeaderRouter) RouteAny(header string, match []string, middlewareHandler func(next http.Handler) http.Handler) HeaderRouter\n```\n\n## RouteDefault\n\n```go\nfunc (hr HeaderRouter) RouteDefault(handler func(next http.Handler) http.Handler) HeaderRouter\n```\n\n## LogEntry\n\n```go\ntype LogEntry interface {\n\tWrite(status, bytes int, header http.Header, elapsed time.Duration, extra any)\n\tPanic(v any, stack []byte)\n}\n```\n\nLogEntry records the final log when a request completes. See defaultLogEntry for an example implementation.\n\n- `Write: func(status, bytes int, header http.Header, elapsed time.Duration, extra any)`: \n- `Panic: func(v any, stack []byte)`: \n\n## LogFormatter\n\n```go\ntype LogFormatter interface {\n\tNewLogEntry(r *http.Request) LogEntry\n}\n```\n\nLogFormatter initiates the beginning of a new LogEntry per request. See DefaultLogFormatter for an example implementation.\n\n- `NewLogEntry: func(r *http.Request) LogEntry`: \n\n## LoggerInterface\n\n```go\ntype LoggerInterface interface {\n\tPrint(v ...any)\n}\n```\n\nLoggerInterface accepts printing to stdlib logger or compatible logger.\n\n- `Print: func(v ...any)`: \n\n## Pattern\n\n```go\ntype Pattern struct {\n\t// contains filtered or unexported fields\n}\n```\n\n## Match\n\n```go\nfunc (p Pattern) Match(v string) bool\n```\n\n## ThrottleOpts\n\n```go\ntype ThrottleOpts struct {\n\t// RetryAfterFn, if set, enables the Retry-After header on rejected requests.\n\t// The result is rounded up to whole seconds and clamped at 0, because the\n\t// header carries a non-negative integer (RFC 9110 section 10.2.3).\n\tRetryAfterFn   func(ctxDone bool) time.Duration\n\tLimit          int\n\tBacklogLimit   int\n\tBacklogTimeout time.Duration\n\tStatusCode     int\n}\n```\n\nThrottleOpts represents a set of throttling options.\n\n- `RetryAfterFn: func(ctxDone bool) time.Duration`: RetryAfterFn, if set, enables the Retry-After header on rejected requests. The result is rounded up to whole seconds and clamped at 0, because the header carries a non-negative integer (RFC 9110 section 10.2.3).\n- `Limit: int`: \n- `BacklogLimit: int`: \n- `BacklogTimeout: time.Duration`: \n- `StatusCode: int`: \n\n## WrapResponseWriter\n\n```go\ntype WrapResponseWriter interface {\n\thttp.ResponseWriter\n\t// Status returns the HTTP status of the request, or 0 if one has not\n\t// yet been sent.\n\tStatus() int\n\t// BytesWritten returns the total number of bytes sent to the client.\n\tBytesWritten() int\n\t// Tee causes the response body to be written to the given io.Writer in\n\t// addition to proxying the writes through. Only one io.Writer can be\n\t// tee'd to at once: setting a second one will overwrite the first.\n\t// Writes will be sent to the proxy before being written to this\n\t// io.Writer. It is illegal for the tee'd writer to be modified\n\t// concurrently with writes.\n\tTee(io.Writer)\n\t// Unwrap returns the original proxied target.\n\tUnwrap() http.ResponseWriter\n\t// Discard causes all writes to the original ResponseWriter be discarded,\n\t// instead writing only to the tee'd writer if it's set.\n\t// Flush calls also do not reach the original ResponseWriter.\n\t// The caller is responsible for calling WriteHeader and Write on the\n\t// original ResponseWriter once the processing is done.\n\tDiscard()\n}\n```\n\nWrapResponseWriter is a proxy around an http.ResponseWriter that allows you to hook into various parts of the response process.\n\n- `http.ResponseWriter: http.ResponseWriter`: \n- `Status: func() int`: Status returns the HTTP status of the request, or 0 if one has not yet been sent.\n- `BytesWritten: func() int`: BytesWritten returns the total number of bytes sent to the client.\n- `Tee: func(io.Writer)`: Tee causes the response body to be written to the given io.Writer in addition to proxying the writes through. Only one io.Writer can be tee'd to at once: setting a second one will overwrite the first. Writes will be sent to the proxy before being written to this io.Writer. It is illegal for the tee'd writer to be modified concurrently with writes.\n- `Unwrap: func() http.ResponseWriter`: Unwrap returns the original proxied target.\n- `Discard: func()`: Discard causes all writes to the original ResponseWriter be discarded, instead writing only to the tee'd writer if it's set. Flush calls also do not reach the original ResponseWriter. The caller is responsible for calling WriteHeader and Write on the original ResponseWriter once the processing is done.",
+      "symbols": [
+        {
+          "name": "const RequestIDKey",
+          "kind": "go constant",
+          "anchor": "const-RequestIDKey"
+        },
+        {
+          "name": "var LogEntryCtxKey",
+          "kind": "go variable",
+          "anchor": "var-LogEntryCtxKey"
+        },
+        {
+          "name": "var DefaultLogger",
+          "kind": "go variable",
+          "anchor": "var-DefaultLogger"
+        },
+        {
+          "name": "var IsTTY",
+          "kind": "go variable",
+          "anchor": "var-IsTTY"
+        },
+        {
+          "name": "var RequestIDHeader",
+          "kind": "go variable",
+          "anchor": "var-RequestIDHeader"
+        },
+        {
+          "name": "var URLFormatCtxKey",
+          "kind": "go variable",
+          "anchor": "var-URLFormatCtxKey"
+        },
+        {
+          "name": "func AllowContentEncoding(contentEncoding ...string) func(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-AllowContentEncoding"
+        },
+        {
+          "name": "func AllowContentType(contentTypes ...string) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-AllowContentType"
+        },
+        {
+          "name": "func BasicAuth(realm string, creds map[string]string) func(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-BasicAuth"
+        },
+        {
+          "name": "func CleanPath(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-CleanPath"
+        },
+        {
+          "name": "func ClientIPFromHeader(trustedHeader string, trustedIPPrefixes ...string) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-ClientIPFromHeader"
+        },
+        {
+          "name": "func ClientIPFromRemoteAddr(h http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-ClientIPFromRemoteAddr"
+        },
+        {
+          "name": "func ClientIPFromXFF(trustedIPPrefixes ...string) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-ClientIPFromXFF"
+        },
+        {
+          "name": "func ClientIPFromXFFTrustedProxies(numTrustedProxies int) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-ClientIPFromXFFTrustedProxies"
+        },
+        {
+          "name": "func Compress(level int, types ...string) func(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-Compress"
+        },
+        {
+          "name": "func ContentCharset(charsets ...string) func(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-ContentCharset"
+        },
+        {
+          "name": "func Deprecation(deprecatedAt time.Time, links ...string) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-Deprecation"
+        },
+        {
+          "name": "func GetClientIP(ctx context.Context) string",
+          "kind": "go function",
+          "anchor": "func-GetClientIP"
+        },
+        {
+          "name": "func GetClientIPAddr(ctx context.Context) netip.Addr",
+          "kind": "go function",
+          "anchor": "func-GetClientIPAddr"
+        },
+        {
+          "name": "func GetHead(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-GetHead"
+        },
+        {
+          "name": "func GetLogEntry(r *http.Request) LogEntry",
+          "kind": "go function",
+          "anchor": "func-GetLogEntry"
+        },
+        {
+          "name": "func GetReqID(ctx context.Context) string",
+          "kind": "go function",
+          "anchor": "func-GetReqID"
+        },
+        {
+          "name": "func Heartbeat(endpoint string) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-Heartbeat"
+        },
+        {
+          "name": "func Logger(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-Logger"
+        },
+        {
+          "name": "func Maybe(mw func(http.Handler) http.Handler, maybeFn func(r *http.Request) bool) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-Maybe"
+        },
+        {
+          "name": "func New(h http.Handler) func(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-New"
+        },
+        {
+          "name": "func NewCompressor(level int, types ...string) *Compressor",
+          "kind": "go function",
+          "anchor": "func-NewCompressor"
+        },
+        {
+          "name": "func NewPattern(value string) Pattern",
+          "kind": "go function",
+          "anchor": "func-NewPattern"
+        },
+        {
+          "name": "func NewWrapResponseWriter(w http.ResponseWriter, protoMajor int) WrapResponseWriter",
+          "kind": "go function",
+          "anchor": "func-NewWrapResponseWriter"
+        },
+        {
+          "name": "func NextRequestID() uint64",
+          "kind": "go function",
+          "anchor": "func-NextRequestID"
+        },
+        {
+          "name": "func NoCache(h http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-NoCache"
+        },
+        {
+          "name": "func PageRoute(path string, handler http.Handler) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-PageRoute"
+        },
+        {
+          "name": "func PathRewrite(old, new string) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-PathRewrite"
+        },
+        {
+          "name": "func PrintPrettyStack(rvr any)",
+          "kind": "go function",
+          "anchor": "func-PrintPrettyStack"
+        },
+        {
+          "name": "func Profiler() http.Handler",
+          "kind": "go function",
+          "anchor": "func-Profiler"
+        },
+        {
+          "name": "func RealIP(h http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-RealIP"
+        },
+        {
+          "name": "func Recoverer(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-Recoverer"
+        },
+        {
+          "name": "func RedirectSlashes(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-RedirectSlashes"
+        },
+        {
+          "name": "func RequestID(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-RequestID"
+        },
+        {
+          "name": "func RequestLogger(f LogFormatter) func(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-RequestLogger"
+        },
+        {
+          "name": "func RequestSize(bytes int64) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-RequestSize"
+        },
+        {
+          "name": "func RouteHeaders() HeaderRouter",
+          "kind": "go function",
+          "anchor": "func-RouteHeaders"
+        },
+        {
+          "name": "func SetHeader(key, value string) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-SetHeader"
+        },
+        {
+          "name": "func StripPrefix(prefix string) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-StripPrefix"
+        },
+        {
+          "name": "func StripSlashes(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-StripSlashes"
+        },
+        {
+          "name": "func Sunset(sunsetAt time.Time, links ...string) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-Sunset"
+        },
+        {
+          "name": "func SupressNotFound(router *chi.Mux) func(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-SupressNotFound"
+        },
+        {
+          "name": "func Throttle(limit int) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-Throttle"
+        },
+        {
+          "name": "func ThrottleBacklog(limit, backlogLimit int, backlogTimeout time.Duration) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-ThrottleBacklog"
+        },
+        {
+          "name": "func ThrottleWithOpts(opts ThrottleOpts) func(http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-ThrottleWithOpts"
+        },
+        {
+          "name": "func Timeout(timeout time.Duration) func(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-Timeout"
+        },
+        {
+          "name": "func URLFormat(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-URLFormat"
+        },
+        {
+          "name": "func WithLogEntry(r *http.Request, entry LogEntry) *http.Request",
+          "kind": "go function",
+          "anchor": "func-WithLogEntry"
+        },
+        {
+          "name": "func WithValue(key, val any) func(next http.Handler) http.Handler",
+          "kind": "go function",
+          "anchor": "func-WithValue"
+        },
+        {
+          "name": "type Compressor",
+          "kind": "go type",
+          "anchor": "type-Compressor"
+        },
+        {
+          "name": "Compressor.Handler",
+          "kind": "go method",
+          "anchor": "method-Compressor-Handler"
+        },
+        {
+          "name": "Compressor.SetEncoder",
+          "kind": "go method",
+          "anchor": "method-Compressor-SetEncoder"
+        },
+        {
+          "name": "type DefaultLogFormatter",
+          "kind": "go type",
+          "anchor": "type-DefaultLogFormatter"
+        },
+        {
+          "name": "DefaultLogFormatter.NewLogEntry",
+          "kind": "go method",
+          "anchor": "method-DefaultLogFormatter-NewLogEntry"
+        },
+        {
+          "name": "type EncoderFunc",
+          "kind": "go type",
+          "anchor": "type-EncoderFunc"
+        },
+        {
+          "name": "type HeaderRoute",
+          "kind": "go type",
+          "anchor": "type-HeaderRoute"
+        },
+        {
+          "name": "HeaderRoute.IsMatch",
+          "kind": "go method",
+          "anchor": "method-HeaderRoute-IsMatch"
+        },
+        {
+          "name": "type HeaderRouter",
+          "kind": "go type",
+          "anchor": "type-HeaderRouter"
+        },
+        {
+          "name": "HeaderRouter.Handler",
+          "kind": "go method",
+          "anchor": "method-HeaderRouter-Handler"
+        },
+        {
+          "name": "HeaderRouter.Route",
+          "kind": "go method",
+          "anchor": "method-HeaderRouter-Route"
+        },
+        {
+          "name": "HeaderRouter.RouteAny",
+          "kind": "go method",
+          "anchor": "method-HeaderRouter-RouteAny"
+        },
+        {
+          "name": "HeaderRouter.RouteDefault",
+          "kind": "go method",
+          "anchor": "method-HeaderRouter-RouteDefault"
+        },
+        {
+          "name": "type LogEntry",
+          "kind": "go type",
+          "anchor": "type-LogEntry"
+        },
+        {
+          "name": "type LogFormatter",
+          "kind": "go type",
+          "anchor": "type-LogFormatter"
+        },
+        {
+          "name": "type LoggerInterface",
+          "kind": "go type",
+          "anchor": "type-LoggerInterface"
+        },
+        {
+          "name": "type Pattern",
+          "kind": "go type",
+          "anchor": "type-Pattern"
+        },
+        {
+          "name": "Pattern.Match",
+          "kind": "go method",
+          "anchor": "method-Pattern-Match"
+        },
+        {
+          "name": "type ThrottleOpts",
+          "kind": "go type",
+          "anchor": "type-ThrottleOpts"
+        },
+        {
+          "name": "type WrapResponseWriter",
+          "kind": "go type",
+          "anchor": "type-WrapResponseWriter"
+        }
+      ],
+      "documentId": "pkg-middleware",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api/pkg-middleware.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api/pkg-middleware.md"
+        }
+      ]
+    },
+    {
+      "id": "go-api.md",
+      "kind": "page",
+      "title": "Go API",
+      "description": "Go API for github.com/go-chi/chi/v5 across 2 packages.",
+      "tab": "go-api",
+      "url": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api.html",
+      "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api.md",
+      "file": "go-api.md",
+      "searchText": "- [github.com/go-chi/chi/v5](/chi-field-guide/go-api/package-root.html): Package chi is a small, idiomatic and composable router for building HTTP services.\n- [github.com/go-chi/chi/v5/middleware](/chi-field-guide/go-api/pkg-middleware.html): ",
+      "documentId": "index",
+      "locale": "en",
+      "contentLocale": "en",
+      "contentVersion": "current",
+      "versionScope": "site",
+      "alternates": [
+        {
+          "locale": "en",
+          "contentVersion": "current",
+          "url": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api.html",
+          "markdown": "https://nnyydct-ship-it.github.io/chi-field-guide/go-api.md"
+        }
+      ]
+    }
+  ]
+}

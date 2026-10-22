@@ -1,0 +1,19 @@
+# Chi Field Guide
+
+## Field guide
+
+- [Chi Field Guide](https://nnyydct-ship-it.github.io/chi-field-guide/introduction.md): Source-linked Go router reference, three working recipes, and a pinned reproducible build.
+- [A router you can exercise](https://nnyydct-ship-it.github.io/chi-field-guide/quickstart.md): Build a minimal chi router and run the guide's checks against its pinned source.
+- [Paths, methods and HEAD](https://nnyydct-ship-it.github.io/chi-field-guide/routing.md): Distinguish a missing path from a missing method, and make HEAD behavior explicit.
+- [Put middleware at the scope it needs](https://nnyydct-ship-it.github.io/chi-field-guide/middleware.md): Observe outer, group and inline middleware in one request, and avoid a late Use panic.
+- [A deadline needs a cooperating handler](https://nnyydct-ship-it.github.io/chi-field-guide/timeouts.md): Exercise cancellation and a 504 response without claiming that Timeout kills work.
+- [Every declaration has a source](https://nnyydct-ship-it.github.io/chi-field-guide/source-map.md): Pinned source links for the generated public API surface.
+- [Coverage and checks](https://nnyydct-ship-it.github.io/chi-field-guide/coverage.md): What was generated from source, what the recipes check, and what remains outside this guide.
+- [Reproduce this version](https://nnyydct-ship-it.github.io/chi-field-guide/reproduce.md): Build the committed snapshot or regenerate it from one pinned upstream commit.
+- [Attribution and license](https://nnyydct-ship-it.github.io/chi-field-guide/license.md): Upstream source, generated reference and the independent guide's authorship.
+
+## Go API
+
+- [github.com/go-chi/chi/v5](https://nnyydct-ship-it.github.io/chi-field-guide/go-api/package-root.md): Package chi is a small, idiomatic and composable router for building HTTP services.
+- [middleware](https://nnyydct-ship-it.github.io/chi-field-guide/go-api/pkg-middleware.md): github.com/go-chi/chi/v5/middleware
+- [Go API](https://nnyydct-ship-it.github.io/chi-field-guide/go-api.md): Go API for github.com/go-chi/chi/v5 across 2 packages.

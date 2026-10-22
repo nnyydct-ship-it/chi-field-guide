@@ -1,0 +1,95 @@
+{
+  "/chi-field-guide/introduction.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/introduction.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/quickstart.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/quickstart.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/routing.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/routing.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/middleware.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/middleware.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/timeouts.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/timeouts.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/source-map.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/source-map.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/coverage.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/coverage.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/reproduce.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/reproduce.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/license.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/license.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/go-api/package-root.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/go-api/package-root.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/go-api/pkg-middleware.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/go-api/pkg-middleware.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/go-api.md": {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/go-api.html>; rel=\"canonical\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\""
+  },
+  "/chi-field-guide/documents.json": {
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "/chi-field-guide/llms.txt": {
+    "Content-Type": "text/plain; charset=utf-8"
+  },
+  "/chi-field-guide/llms-full.txt": {
+    "Content-Type": "text/plain; charset=utf-8"
+  },
+  "/chi-field-guide/introduction.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/introduction.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  },
+  "/chi-field-guide/quickstart.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/quickstart.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  },
+  "/chi-field-guide/routing.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/routing.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  },
+  "/chi-field-guide/middleware.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/middleware.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  },
+  "/chi-field-guide/timeouts.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/timeouts.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  },
+  "/chi-field-guide/source-map.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/source-map.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  },
+  "/chi-field-guide/coverage.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/coverage.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  },
+  "/chi-field-guide/reproduce.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/reproduce.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  },
+  "/chi-field-guide/license.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/license.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  },
+  "/chi-field-guide/go-api/package-root.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/go-api/package-root.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  },
+  "/chi-field-guide/go-api/pkg-middleware.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/go-api/pkg-middleware.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  },
+  "/chi-field-guide/go-api.html": {
+    "Link": "<https://nnyydct-ship-it.github.io/chi-field-guide/go-api.md>; rel=\"alternate\"; type=\"text/markdown\", <https://nnyydct-ship-it.github.io/chi-field-guide/llms.txt>; rel=\"describedby\"; type=\"text/plain\""
+  }
+}
